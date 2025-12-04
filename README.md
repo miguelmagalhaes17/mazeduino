@@ -1,0 +1,2 @@
+# Maze Ball Project
+This repo contains the code for the Maze Ball Project, developed in accordance with the curricular unit of Embedded Systems (SEMB) of the Faculty of Engineering  of the University of Porto (FEUP).
