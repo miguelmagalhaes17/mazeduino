@@ -53,9 +53,16 @@ RmsTask tasks[] = {
   { TaskAccel,  "ACCEL",   8192, 100,  0, NULL }  // Accelerometer reading task*/
 };
 
+// Task related varibles
 int taskCount = sizeof(tasks) / sizeof(tasks[0]);
-int selectButtonState = LOW;
-int cycleButtonState = LOW;
+
+// Button related variables
+bool readSelectButtonState = 0;
+bool readCycleButtonState = 0;
+bool selectButtonState = 0;
+bool cycleButtonState = 0;
+bool prevSelectButtonState = 0;
+bool prevCycleButtonState = 0;
 
 // -----------------------------------------------------------------------------------------------------
 
@@ -132,8 +139,20 @@ void TaskSlow(void* pv) {
 
 /*void TaskReadButtons()
 {
-  selectButtonState = digitalRead(SELBUTTON_PIN);
-  cycleButtonState = digitalRead(CYCLEBUTTON_PIN);
+  readSelectButtonState = !digitalRead(SELBUTTON_PIN);
+  readCycleButtonState = !digitalRead(SELBUTTON_PIN);
+  
+  if(readSelectButtonState != prevSelectButtonState)
+  {
+    selectButtonState = readSelectButtonState;
+    prevSelectButtonState = readSelectButtonState;
+  }
+  
+  if(readCycleButtonState != prevCycleButtonState
+  {
+    cycleButtonState = readCycleButtonState;
+    prevCycleButtonState = readCycleButtonState;
+  }
 }
 void TaskReadAccel1()
 {
