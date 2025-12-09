@@ -1,12 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_LSM303.h>
-
-// -----------------------------------------------------------------------------------------------------
-
-// Accelerometer objects
-Adafruit_LSM303 accel1;
-Adafruit_LSM303 accel2;
+#include <Adafruit_LSM303.h> // Accelerometer utils
+#include <Adafruit_PCD8544.h> // LCD utils
 
 // -----------------------------------------------------------------------------------------------------
 
@@ -35,6 +30,9 @@ Adafruit_LSM303 accel2;
 
 // -----------------------------------------------------------------------------------------------------
 
+// Debug
+//#define DEBUG // Uncomment for debug messages
+
 // RMS Task Structure
 typedef struct RmsTask {
   TaskFunction_t function;
@@ -47,10 +45,7 @@ typedef struct RmsTask {
 
 // Task array
 RmsTask tasks[] = {
-  { TaskFast,   "FAST",    4096, 10,   0, NULL },
-  { TaskMedium, "MEDIUM",  4096, 50,   0, NULL },
-  { TaskSlow,   "SLOW",    4096, 200,  0, NULL }/*,
-  { TaskAccel,  "ACCEL",   8192, 100,  0, NULL }  // Accelerometer reading task*/
+  //{ TaskFast,   "FAST",    4096, 10,   0, NULL }
 };
 
 // Task related varibles
@@ -64,154 +59,43 @@ bool cycleButtonState = 0;
 bool prevSelectButtonState = 0;
 bool prevCycleButtonState = 0;
 
+// Mutexes
+SemaphoreHandle_t  xButtonMutex = NULL;
+SemaphoreHandle_t  xAccel1Mutex = NULL;
+SemaphoreHandle_t  xAccel2Mutex = NULL;
+
+// Accelerometer objects
+Adafruit_LSM303 accel1;
+Adafruit_LSM303 accel2;
+
+// Accelerometer events
+sensors_event_t accel1Event;
+sensors_event_t accel2Event;
+
+// LCD objects
+Adafruit_PCD8544 lcd1 = Adafruit_PCD8544(LCD1_CLK_PIN,
+										 LCD1_DIN_PIN,
+										 LCD1_DC_PIN,
+										 LCD1_CS_PIN,
+										 LCD1_RST_PIN);										
+Adafruit_PCD8544 lcd2 = Adafruit_PCD8544(LCD2_CLK_PIN,
+										 LCD2_DIN_PIN,
+										 LCD2_DC_PIN,
+										 LCD2_CS_PIN,
+										 LCD2_RST_PIN);										 
+
 // -----------------------------------------------------------------------------------------------------
 
-// Task function declarations
-void TaskFast(void* pv);
-void TaskMedium(void* pv);
-void TaskSlow(void* pv);
-void TaskReadButtons(void* pv);
-//void TaskAccel(void* pv);  // New accelerometer task
+// Function declarations
+void assignRmsPriorities();
+void createRmsTasks();
+void TaskFast();
+void TaskMedium();
+void TaskSlow();
+void TaskReadButtons();
 
 // -----------------------------------------------------------------------------------------------------
 
-// RMS Priority Assignment
-void assignRmsPriorities() {
-  // Sort tasks by period (shorter period = higher priority)
-  for(int i = 0; i < taskCount - 1; i++) {
-    for(int j = i + 1; j < taskCount; j++) {
-      if(tasks[j].periodMs < tasks[i].periodMs) {
-        RmsTask tmp = tasks[i];
-        tasks[i] = tasks[j];
-        tasks[j] = tmp;
-      }
-    }
-  }
-
-  // Assign priorities (highest number = highest priority in FreeRTOS)
-  UBaseType_t priority = taskCount;
-  for(int i = 0; i < taskCount; i++) {
-    tasks[i].priority = priority--;
-  }
-}
-
-// Create all RMS tasks
-void createRmsTasks() {
-  assignRmsPriorities();
-
-  for(int i = 0; i < taskCount; i++) {
-    xTaskCreatePinnedToCore(
-      tasks[i].function,
-      tasks[i].name,
-      tasks[i].stackSize,
-      NULL,
-      tasks[i].priority,
-      &tasks[i].handle,
-      1  // Run on core 1, leave core 0 for WiFi/BT if needed
-    );
-
-    Serial.printf("Created %s with priority %u, period %ums\n", 
-                  tasks[i].name, tasks[i].priority, tasks[i].periodMs);
-  }
-}
-
-// Task Implementations
-void TaskFast(void* pv) {
-  while(1) {
-    Serial.println("Fast task");
-    vTaskDelay(pdMS_TO_TICKS(tasks[0].periodMs));  // Use task's period
-  }
-}
-
-void TaskMedium(void* pv) {
-  while(1) {
-    Serial.println("Medium task");
-    vTaskDelay(pdMS_TO_TICKS(tasks[1].periodMs));
-  }
-}
-
-void TaskSlow(void* pv) {
-  while(1) {
-    Serial.println("Slow task");
-    vTaskDelay(pdMS_TO_TICKS(tasks[2].periodMs));
-  }
-}
-
-/*void TaskReadButtons()
-{
-  readSelectButtonState = !digitalRead(SELBUTTON_PIN);
-  readCycleButtonState = !digitalRead(SELBUTTON_PIN);
-  
-  if(readSelectButtonState != prevSelectButtonState)
-  {
-    selectButtonState = readSelectButtonState;
-    prevSelectButtonState = readSelectButtonState;
-  }
-  
-  if(readCycleButtonState != prevCycleButtonState
-  {
-    cycleButtonState = readCycleButtonState;
-    prevCycleButtonState = readCycleButtonState;
-  }
-}
-void TaskReadAccel1()
-{
-
-}
-void TaskReadAccel2()
-{
-
-}
-void TaskDisplayLCD()
-{
-
-}
-void TaskGameLogic()
-{
-
-}*/
-
-/*
-void TaskAccel(void* pv) {
-  // Initialize accelerometers
-  Wire.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
-  Wire1.begin(ACCEL2_SDA_PIN, ACCEL2_SCL_PIN);
-  
-  if(!accel1.begin()) {
-    Serial.println("Accelerometer 1 not found!");
-  } else {
-    Serial.println("Accelerometer 1 initialized");
-  }
-  
-  if(!accel2.begin(&Wire1)) {  // Use Wire1 for second accelerometer
-    Serial.println("Accelerometer 2 not found!");
-  } else {
-    Serial.println("Accelerometer 2 initialized");
-  }
-  
-  while(1) {
-    // Read from first accelerometer
-    sensors_event_t event1;
-    accel1.getEvent(&event1);
-    
-    Serial.printf("Accel1: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
-                  event1.acceleration.x, 
-                  event1.acceleration.y, 
-                  event1.acceleration.z);
-    
-    // Read from second accelerometer
-    sensors_event_t event2;
-    accel2.getEvent(&event2);
-    
-    Serial.printf("Accel2: X=%.2f Y=%.2f Z=%.2f m/s^2\n", 
-                  event2.acceleration.x, 
-                  event2.acceleration.y, 
-                  event2.acceleration.z);
-    
-    vTaskDelay(pdMS_TO_TICKS(tasks[3].periodMs));  // 100ms period
-  }
-}
-*/
 void setup()
 {
   Serial.begin(115200);
@@ -231,7 +115,12 @@ void setup()
   } else {
     Serial.println("Accelerometer 2 initialized");
   }
-
+  
+  // Mutex init
+  xButtonMutex = xSemaphoreCreateMutex();
+  xAccel1Mutex = xSemaphoreCreateMutex();
+  xAccel2Mutex = xSemaphoreCreateMutex();
+  
   // Button init
   pinMode(SELBUTTON_PIN, INPUT_PULLUP);
   pinMode(CYCLEBUTTON_PIN, INPUT_PULLUP);
@@ -253,3 +142,131 @@ void loop()
   // This task runs at lowest priority (1 by default)
   vTaskDelay(portMAX_DELAY);  // Sleep forever
 }
+
+// -----------------------------------------------------------------------------------------------------
+
+// RMS Priority Assignment
+void assignRmsPriorities() {
+  // Sort tasks by period (shorter period = higher priority)
+  for(int i = 0; i < taskCount - 1; i++) {
+    for(int j = i + 1; j < taskCount; j++) {
+      if(tasks[j].periodMs < tasks[i].periodMs) {
+        RmsTask tmp = tasks[i];
+        tasks[i] = tasks[j];
+        tasks[j] = tmp;
+      }
+    }
+  }
+
+  // Assign priorities (highest number = highest priority in FreeRTOS)
+  UBaseType_t priority = taskCount;
+  for(int i = 0; i < taskCount; i++) {
+    tasks[i].priority = priority--;
+    
+	#IFDEF DEBUG
+	  Serial.printf("assignRmsPriorities: Assigned %s priority %u, period %ums\n", 
+                 tasks[i].name, tasks[i].priority, tasks[i].periodMs);
+    #ENDIF
+  }
+}
+
+// Create all RMS tasks
+void createRmsTasks() {
+  assignRmsPriorities();
+
+  for(int i = 0; i < taskCount; i++) {
+    xTaskCreatePinnedToCore(
+      tasks[i].function,
+      tasks[i].name,
+      tasks[i].stackSize,
+      NULL,
+      tasks[i].priority,
+      &tasks[i].handle,
+      1  // Run on core 1
+    );
+	
+	#IFDEF DEBUG
+		Serial.printf("createRmsTasks: Created %s with priority %u, period %ums\n", 
+                  tasks[i].name, tasks[i].priority, tasks[i].periodMs);
+	#ENDIF
+  }
+}
+
+// Task Implementations
+// Read both buttons
+/*void TaskReadButtons()
+{
+  readSelectButtonState = !digitalRead(SELBUTTON_PIN);
+  readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
+  
+  if(readSelectButtonState != prevSelectButtonState)
+  {
+	if (xSemaphoreTake(xButtonMutex, portMAX_DELAY))
+	{
+		selectButtonState = readSelectButtonState;
+		prevSelectButtonState = readSelectButtonState;
+		xSemaphoreGive(xButtonMutexMutex);
+	}
+  }
+  
+  if(readCycleButtonState != prevCycleButtonState
+  {
+	if (xSemaphoreTake(xButtonMutex, portMAX_DELAY))
+	{
+		cycleButtonState = readCycleButtonState;
+		prevCycleButtonState = readCycleButtonState;
+		xSemaphoreGive(xButtonMutexMutex);		
+	}
+  }
+  
+  #IFDEF DEBUG
+	Serial.printf("TaskReadButtons: Select Button: %d\n
+				   Cycle Button: %d\n
+				   , selectButtonState , cycleButtonState");
+  #ENDIF
+  
+}
+
+// Read accelerometer 1
+void TaskReadAccel1()
+{
+	if (xSemaphoreTake(xAccel1Mutex, portMAX_DELAY))
+	{
+		accel1.getEvent(&accel1Event);
+		xSemaphoreGive(xAccel1Mutex);
+	}
+	
+	#IFDEF DEBUG
+		Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
+					  accel1Event.acceleration.x, 
+					  accel1Event.acceleration.y);		
+	#ENDIF
+}
+
+// Read accelerometer 2
+void TaskReadAccel2()
+{
+	if (xSemaphoreTake(xAccel1Mutex, portMAX_DELAY))
+	{
+		accel2.getEvent(&accel2Event);
+		xSemaphoreGive(xAccel2Mutex);
+	}	
+	
+	#IFDEF DEBUG	
+		Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f m/s^2\n", 
+					  accel2Event.acceleration.x, 
+					  accel2Event.acceleration.y);
+	#ENDIF
+}
+
+// Write to LCD
+void TaskDisplayLCD()
+{
+	// lcd1 lcd2
+}
+
+// Run Game logic or Main Screen logic
+void TaskGameLogic()
+{
+
+}*/
