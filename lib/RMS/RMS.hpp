@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <Tasks.hpp>
-#include <Priority_Ceiling_Protocol.hpp>
+#include <PCP.hpp>
 
 #define NUMBER_OF_TASKS
 

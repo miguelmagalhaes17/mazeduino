@@ -6,7 +6,7 @@
 #include <Adafruit_PCD8544.h> // LCD utils
 #include <Tasks.hpp>
 #include <RMS.hpp>
-#include <Priority_Ceiling_Protocol.hpp>
+#include <PCP.hpp>
 
 // Debug
 #define DEBUG // Uncomment for debug messages						 
