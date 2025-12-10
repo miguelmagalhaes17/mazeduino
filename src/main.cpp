@@ -2,7 +2,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_LSM303.h> // Accelerometer utils
-#include <Adafruit_GFX.h>
+#include <Adafruit_GFX.h> // Auxilary Library for LCD
 #include <Adafruit_PCD8544.h> // LCD utils
 
 // -----------------------------------------------------------------------------------------------------
@@ -32,6 +32,17 @@
 
 // -----------------------------------------------------------------------------------------------------
 
+// Function declarations
+void assignRmsPriorities();
+void createRmsTasks();
+void TaskReadButtons(void*);
+void TaskReadAccel1(void*);
+void TaskReadAccel2(void*);
+void TaskDisplayLCD(void*);
+void TaskGameLogic(void*);
+
+// -----------------------------------------------------------------------------------------------------
+
 // Debug
 #define DEBUG // Uncomment for debug messages
 
@@ -47,7 +58,12 @@ typedef struct RmsTask {
 
 // Task array
 RmsTask tasks[] = {
-  //{ TaskFast,   "FAST",    4096, 10,   0, NULL }
+  {TaskReadButtons , "ReadButtons" , 4096 , 0 , 0 , NULL},
+  {TaskReadAccel1 , "ReadAccel1" , 4096 , 0 , 0 , NULL},
+  {TaskReadAccel2 , "ReadAccel2" , 4096 , 0 , 0 , NULL},
+  {TaskDisplayLCD , "DisplayLCD" , 4096 , 0 , 0 , NULL},
+  {TaskGameLogic , "GameLogic" , 4096 , 0 , 0 , NULL},
+  
 };
 
 // Task related varibles
@@ -81,13 +97,6 @@ Adafruit_PCD8544 lcd2 = Adafruit_PCD8544(LCD2_CLK_PIN,
 										 LCD2_DC_PIN,
 										 LCD2_CS_PIN,
 										 LCD2_RST_PIN);										 
-
-// -----------------------------------------------------------------------------------------------------
-
-// Function declarations
-void assignRmsPriorities();
-void createRmsTasks();
-void TaskReadButtons();
 
 // -----------------------------------------------------------------------------------------------------
 
@@ -190,7 +199,7 @@ void createRmsTasks() {
 
 // Task Implementations
 // Read both buttons
-void TaskReadButtons()
+void TaskReadButtons(void*)
 {
   readSelectButtonState = !digitalRead(SELBUTTON_PIN);
   readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
@@ -224,7 +233,7 @@ void TaskReadButtons()
 }
 
 // Read accelerometer 1
-void TaskReadAccel1()
+void TaskReadAccel1(void*)
 {
 	if (xSemaphoreTake(xAccel1Mutex, portMAX_DELAY))
 	{
@@ -241,7 +250,7 @@ void TaskReadAccel1()
 }
 
 // Read accelerometer 2
-void TaskReadAccel2()
+void TaskReadAccel2(void*)
 {
 	if (xSemaphoreTake(xAccel2Mutex, portMAX_DELAY))
 	{
@@ -258,13 +267,13 @@ void TaskReadAccel2()
 }
 
 // Write to LCD
-void TaskDisplayLCD()
+void TaskDisplayLCD(void*)
 {
 	// lcd1 lcd2
 }
 
 // Run Game logic or Main Screen logic
-void TaskGameLogic()
+void TaskGameLogic(void*)
 {
 
 }
