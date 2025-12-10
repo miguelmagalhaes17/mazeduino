@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <SPI.h>
 #include <Adafruit_LSM303.h> // Accelerometer utils
+#include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h> // LCD utils
 
 // -----------------------------------------------------------------------------------------------------
@@ -31,7 +33,7 @@
 // -----------------------------------------------------------------------------------------------------
 
 // Debug
-//#define DEBUG // Uncomment for debug messages
+#define DEBUG // Uncomment for debug messages
 
 // RMS Task Structure
 typedef struct RmsTask {
@@ -68,10 +70,6 @@ SemaphoreHandle_t  xAccel2Mutex = NULL;
 Adafruit_LSM303 accel1;
 Adafruit_LSM303 accel2;
 
-// Accelerometer events
-sensors_event_t accel1Event;
-sensors_event_t accel2Event;
-
 // LCD objects
 Adafruit_PCD8544 lcd1 = Adafruit_PCD8544(LCD1_CLK_PIN,
 										 LCD1_DIN_PIN,
@@ -89,9 +87,6 @@ Adafruit_PCD8544 lcd2 = Adafruit_PCD8544(LCD2_CLK_PIN,
 // Function declarations
 void assignRmsPriorities();
 void createRmsTasks();
-void TaskFast();
-void TaskMedium();
-void TaskSlow();
 void TaskReadButtons();
 
 // -----------------------------------------------------------------------------------------------------
@@ -104,6 +99,7 @@ void setup()
   Wire.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
   Wire1.begin(ACCEL2_SDA_PIN, ACCEL2_SCL_PIN);
 
+  // Check accelerometers
   if(!accel1.begin()) {
     Serial.println("Accelerometer 1 not found!");
   } else {
@@ -163,10 +159,10 @@ void assignRmsPriorities() {
   for(int i = 0; i < taskCount; i++) {
     tasks[i].priority = priority--;
     
-	#IFDEF DEBUG
+	#ifdef DEBUG
 	  Serial.printf("assignRmsPriorities: Assigned %s priority %u, period %ums\n", 
                  tasks[i].name, tasks[i].priority, tasks[i].periodMs);
-    #ENDIF
+    #endif
   }
 }
 
@@ -185,45 +181,45 @@ void createRmsTasks() {
       1  // Run on core 1
     );
 	
-	#IFDEF DEBUG
+	#ifdef DEBUG
 		Serial.printf("createRmsTasks: Created %s with priority %u, period %ums\n", 
                   tasks[i].name, tasks[i].priority, tasks[i].periodMs);
-	#ENDIF
+	#endif
   }
 }
 
 // Task Implementations
 // Read both buttons
-/*void TaskReadButtons()
+void TaskReadButtons()
 {
   readSelectButtonState = !digitalRead(SELBUTTON_PIN);
   readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
   
   if(readSelectButtonState != prevSelectButtonState)
   {
-	if (xSemaphoreTake(xButtonMutex, portMAX_DELAY))
-	{
-		selectButtonState = readSelectButtonState;
-		prevSelectButtonState = readSelectButtonState;
-		xSemaphoreGive(xButtonMutexMutex);
-	}
+    if (xSemaphoreTake(xButtonMutex, portMAX_DELAY))
+    {
+      selectButtonState = readSelectButtonState;
+      prevSelectButtonState = readSelectButtonState;
+      xSemaphoreGive(xButtonMutex);
+    }
   }
   
-  if(readCycleButtonState != prevCycleButtonState
+  if(readCycleButtonState != prevCycleButtonState)
   {
-	if (xSemaphoreTake(xButtonMutex, portMAX_DELAY))
-	{
-		cycleButtonState = readCycleButtonState;
-		prevCycleButtonState = readCycleButtonState;
-		xSemaphoreGive(xButtonMutexMutex);		
-	}
+    if (xSemaphoreTake(xButtonMutex, portMAX_DELAY))
+    {
+      cycleButtonState = readCycleButtonState;
+      prevCycleButtonState = readCycleButtonState;
+      xSemaphoreGive(xButtonMutex);		
+    }
   }
   
-  #IFDEF DEBUG
-	Serial.printf("TaskReadButtons: Select Button: %d\n
-				   Cycle Button: %d\n
-				   , selectButtonState , cycleButtonState");
-  #ENDIF
+  #ifdef DEBUG
+	Serial.printf("TaskReadButtons: Select Button: %d\n"
+                "Cycle Button: %d\n"
+                , selectButtonState , cycleButtonState);
+  #endif
   
 }
 
@@ -232,31 +228,33 @@ void TaskReadAccel1()
 {
 	if (xSemaphoreTake(xAccel1Mutex, portMAX_DELAY))
 	{
-		accel1.getEvent(&accel1Event);
+		accel1.read();
 		xSemaphoreGive(xAccel1Mutex);
 	}
 	
-	#IFDEF DEBUG
+	#ifdef DEBUG
 		Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
-					  accel1Event.acceleration.x, 
-					  accel1Event.acceleration.y);		
-	#ENDIF
+					  accel1.accelData.x,
+            accel1.accelData.y,
+            accel1.accelData.z);		
+	#endif
 }
 
 // Read accelerometer 2
 void TaskReadAccel2()
 {
-	if (xSemaphoreTake(xAccel1Mutex, portMAX_DELAY))
+	if (xSemaphoreTake(xAccel2Mutex, portMAX_DELAY))
 	{
-		accel2.getEvent(&accel2Event);
+		accel2.read();
 		xSemaphoreGive(xAccel2Mutex);
 	}	
 	
-	#IFDEF DEBUG	
-		Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f m/s^2\n", 
-					  accel2Event.acceleration.x, 
-					  accel2Event.acceleration.y);
-	#ENDIF
+	#ifdef DEBUG	
+		Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
+					  accel2.accelData.x,
+            accel2.accelData.y,
+            accel2.accelData.z);	
+	#endif
 }
 
 // Write to LCD
@@ -269,4 +267,4 @@ void TaskDisplayLCD()
 void TaskGameLogic()
 {
 
-}*/
+}
