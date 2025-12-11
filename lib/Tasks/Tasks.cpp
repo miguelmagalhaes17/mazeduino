@@ -33,22 +33,18 @@ void TaskReadButtons(void*)
   
   if(readSelectButtonState != prevSelectButtonState)
   {
-    if (xSemaphoreTake(xButtonMutex, portMAX_DELAY))
-    {
-      selectButtonState = readSelectButtonState;
-      prevSelectButtonState = readSelectButtonState;
-      xSemaphoreGive(xButtonMutex);
-    }
+    pcp_mutex_lock(&xButtonMutex);
+    selectButtonState = readSelectButtonState;
+    prevSelectButtonState = readSelectButtonState;    
+    pcp_mutex_unlock(&xButtonMutex);
   }
   
   if(readCycleButtonState != prevCycleButtonState)
   {
-    if(xSemaphoreTake(xButtonMutex, portMAX_DELAY))
-    {
-      cycleButtonState = readCycleButtonState;
-      prevCycleButtonState = readCycleButtonState;
-      xSemaphoreGive(xButtonMutex);		
-    }
+    pcp_mutex_lock(&xButtonMutex);
+    cycleButtonState = readCycleButtonState;
+    prevCycleButtonState = readCycleButtonState;
+    pcp_mutex_unlock(&xButtonMutex);
   }
   
   #ifdef DEBUG
@@ -62,11 +58,9 @@ void TaskReadButtons(void*)
 // Read accelerometer 1
 void TaskReadAccel1(void*)
 {
-	if(xSemaphoreTake(xAccel1Mutex, portMAX_DELAY))
-	{
-		accel1.read();
-		xSemaphoreGive(xAccel1Mutex);
-	}
+	pcp_mutex_lock(&xAccel1Mutex);
+  accel1.read();  
+  pcp_mutex_unlock(&xAccel1Mutex);
 	
 	#ifdef DEBUG
 		Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
@@ -79,11 +73,9 @@ void TaskReadAccel1(void*)
 // Read accelerometer 2
 void TaskReadAccel2(void*)
 {
-	if (xSemaphoreTake(xAccel2Mutex, portMAX_DELAY))
-	{
-		accel2.read();
-		xSemaphoreGive(xAccel2Mutex);
-	}	
+	pcp_mutex_lock(&xAccel2Mutex);
+  accel2.read();
+  pcp_mutex_unlock(&xAccel2Mutex);
 	
 	#ifdef DEBUG	
 		Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 

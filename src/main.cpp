@@ -7,6 +7,7 @@
 #include <Tasks.hpp>
 #include <RMS.hpp>
 #include <PCP.hpp>
+#include <string.h>
 
 // Debug
 #define DEBUG // Uncomment for debug messages						 
@@ -14,6 +15,7 @@
 void setup()
 {
   Serial.begin(115200);
+  delay(1000);  // Give serial time to initialize
   
   // I2C Accelerometer init
   Wire.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
@@ -21,35 +23,32 @@ void setup()
 
   // Check accelerometers
   if(!accel1.begin()) {
-    Serial.println("Accelerometer 1 not found!");
+    Serial.println("main: Accelerometer 1 not found!");    
   } else {
-    Serial.println("Accelerometer 1 initialized");
+    Serial.println("main: Accelerometer 1 initialized");
   }
   
   if(!accel2.begin()) {  // Use Wire1 for second accelerometer
-    Serial.println("Accelerometer 2 not found!");
+    Serial.println("main: Accelerometer 2 not found!");
   } else {
-    Serial.println("Accelerometer 2 initialized");
+    Serial.println("main: Accelerometer 2 initialized");
   }
-  
-  // Mutex init
-  xButtonMutex = xSemaphoreCreateMutex();
-  xAccel1Mutex = xSemaphoreCreateMutex();
-  xAccel2Mutex = xSemaphoreCreateMutex();
   
   // Button init
   pinMode(SELBUTTON_PIN, INPUT_PULLUP);
   pinMode(CYCLEBUTTON_PIN, INPUT_PULLUP);
-  
-  delay(1000);  // Give serial time to initialize
-  
-  Serial.println("\n=== RMS Scheduler with Accelerometers ===");
-  Serial.printf("Total tasks: %d\n", taskCount);
-  
-  // Create all RMS tasks
-  createRmsTasks();
-  
-  Serial.println("All tasks created. Scheduler starting...\n");
+    
+  // Task init
+  createRmsTasks();  
+  Serial.println("main: All tasks initialized.");
+
+  // Mutex init
+  pcp_mutex_init(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
+  pcp_mutex_init(&xAccel1Mutex , pcp_mutex_init_find_ceiling(xAccel1Mutex.mutexHandle));
+  pcp_mutex_init(&xAccel2Mutex , pcp_mutex_init_find_ceiling(xAccel2Mutex.mutexHandle));
+  Serial.println("main: All mutexes initialized.");
+
+  Serial.printf("main: Scheduler starting...\n");
 }
 
 void loop()
