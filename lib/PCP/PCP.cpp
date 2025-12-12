@@ -23,6 +23,8 @@ void pcp_mutex_init(PCPMutex* m, int ceiling)
 // Lock mutex
 // Can lead to deadlocks if lower priority task takes mutex and
 // higher priority task starts executing before lower task's priority is changed
+// Possible change: First check if mutex available, then change priority to ceiling
+// and only then lock the mutex
 void pcp_mutex_lock(PCPMutex* m)
 {
     xSemaphoreTake(m->mutexHandle, portMAX_DELAY);
