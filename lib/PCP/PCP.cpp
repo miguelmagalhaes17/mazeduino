@@ -16,6 +16,7 @@ void pcp_mutex_init(PCPMutex* m, int ceiling)
         exit(EXIT_FAILURE);
     }
 
+    m->currentTask = NULL;
     m->mutexCeiling = ceiling;
     m->mutexSaved = 0;
 }
@@ -27,22 +28,22 @@ void pcp_mutex_lock(PCPMutex* m)
 {
     xSemaphoreTake(m->mutexHandle, portMAX_DELAY);
     
-    TaskHandle_t task = xTaskGetCurrentTaskHandle();
-    m->mutexSaved = uxTaskPriorityGet(task);
+    m->currentTask = xTaskGetCurrentTaskHandle();
+    m->mutexSaved = uxTaskPriorityGet(m->currentTask);
     
-    if(m->mutexSaved < m->mutexCeiling) vTaskPrioritySet(task, m->mutexCeiling);
+    if(m->mutexSaved < m->mutexCeiling) vTaskPrioritySet(m->currentTask, m->mutexCeiling);
 }
 
 // Unlock mutex
 void pcp_mutex_unlock(PCPMutex* m)
-{
-    TaskHandle_t task = xTaskGetCurrentTaskHandle();
-    
+{    
     if(m->mutexSaved > 0)
-    {
-        vTaskPrioritySet(task, m->mutexSaved);
+    {        
+        vTaskPrioritySet(m->currentTask, m->mutexSaved);
         m->mutexSaved = 0;
     }
-    
+
+    m->currentTask = NULL;
+
     xSemaphoreGive(m->mutexHandle);
 }

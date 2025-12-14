@@ -4,6 +4,7 @@
 // PCP mutex struct
 typedef struct PCPMutex {
     SemaphoreHandle_t mutexHandle;
+    TaskHandle_t currentTask;
     int mutexCeiling;
     int mutexSaved;
 }PCPMutex;

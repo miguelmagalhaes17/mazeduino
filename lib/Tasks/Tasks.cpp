@@ -46,7 +46,7 @@ void TaskReadButtons(void*)
     prevCycleButtonState = readCycleButtonState;
     pcp_mutex_unlock(&xButtonMutex);
   }
-  
+
   #ifdef DEBUG
 	Serial.printf("TaskReadButtons: Select Button: %d\n"
                 "Cycle Button: %d\n"
