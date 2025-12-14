@@ -7,13 +7,7 @@
 #include <Tasks.hpp>
 #include <RMS.hpp>
 #include <PCP.hpp>
-#include <string.h>
-
-// Debug
-// THIS DOESNT WORK - CREATE AN UTIL .HPP WITH DEBUG AND OTHER NONSENSE
-// THIS DOESNT WORK - CREATE AN UTIL .HPP WITH DEBUG AND OTHER NONSENSE
-// THIS DOESNT WORK - CREATE AN UTIL .HPP WITH DEBUG AND OTHER NONSENSE
-#define DEBUG // Uncomment for debug messages						 
+#include <Utils.hpp>
 
 void setup()
 {

@@ -5,8 +5,8 @@
 #include <Adafruit_LSM303.h> // Accelerometer utils
 #include <Adafruit_GFX.h> // Auxilary Library for LCD
 #include <Adafruit_PCD8544.h> // LCD utils
-//#include <RMS.hpp>
 #include <PCP.hpp>
+#include <Utils.hpp>
 
 // Pin definitions
 // Accelerometer Pins

@@ -3,6 +3,7 @@
 #include <Tasks.hpp>
 #include <PCP.hpp>
 #include <vector>
+#include <Utils.hpp>
 
 #define NUMBER_OF_TASKS 5
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include <Utils.hpp>
 
 // PCP mutex struct
 typedef struct PCPMutex {
