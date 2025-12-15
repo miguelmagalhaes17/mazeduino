@@ -94,5 +94,8 @@ void TaskDisplayLCD(void*)
 // Run Game logic or Main Screen logic
 void TaskGameLogic(void*)
 {
-
+  // chama as funcoes que pertencem a game.cpp
+  //p.ex
+  // game_init();
+  
 }
