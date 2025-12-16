@@ -19,24 +19,58 @@ void game_init(){
     gameBall.radius = 2;
 }
 
+enum Select {
+    PLAY = 0,
+    CREDITS = 1
+};
+
+Select selectMode;
+
 
 void game_render() {
+    Serial.println("game_render: Rendering game state...");
     switch(currentGameState) {
         case MENU:
             // code block
             lcd1.clearDisplay();
-            lcd2.clearDisplay();
+            //lcd2.clearDisplay();
             lcd1.setCursor(0,0);
-            lcd1.setTextSize(1);
-            //fazer display de jogar
-            lcd1.setTextColor(WHITE, BLACK); // 'inverted' text
-            lcd1.println("PLAY");
-            lcd1.println("outra merda qualquer");
-            lcd1.display();
-            // acho que agora a lógica deve ser tipo: o botão de select 
-            //faz com que entre no texto - que corresponde a um estado - 
-            //que está invertido,e o outro botão deve inverter as cores 
-            //como tem no exemplo com as cores invertidas
+            lcd1.setTextSize(2);
+            while(selectButtonState == false){
+                if (cycleButtonState == false) {
+                    selectMode = PLAY;
+                
+                    lcd1.setTextColor(WHITE, BLACK);
+                    lcd1.println("PLAY");
+                    lcd1.setTextColor(BLACK); // 'inverted' text
+                    lcd1.println("CREDITS");
+
+                } else {
+                    selectMode = CREDITS;
+                    lcd1.setTextColor(BLACK); // 'inverted' text
+                    lcd1.println("PLAY");
+                    lcd1.setTextColor(WHITE, BLACK);
+                    lcd1.println("CREDITS");
+                }
+            }
+            if (selectMode == PLAY) {
+                currentGameState = PLAYING;
+            } else {
+                lcd1.clearDisplay();
+                lcd1.setCursor(0,0);
+                lcd1.setTextSize(1);    
+                lcd1.println("Game by:");
+                lcd1.println("André Osório");
+                lcd1.println("Miguel Magalhães");
+                lcd1.println("Rodrigo Pereira");
+                lcd1.println("SEMB, FEUP 2025");
+                lcd1.display();
+                delay(3000);
+                currentGameState = MENU;
+            }
+
+
+
             
 
             // fazer o mesmo para o display 2

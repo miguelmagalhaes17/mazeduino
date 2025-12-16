@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <Adafruit_PCD8544.h>
 #include <Adafruit_GFX.h>
+#include <Tasks.hpp>
 
 #define MAZE_WIDTH 16 // trocar depois
 #define MAZE_HEIGHT 16 // trocar depois
@@ -29,6 +30,12 @@ struct ball {
 
 void game_init();
 void game_render();
+
+//funcao jogo
+
+//funcao jogo
+
+//funcao jogo
 
 
 extern GameState currentGameState;

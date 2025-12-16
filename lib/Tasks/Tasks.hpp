@@ -7,6 +7,7 @@
 #include <Adafruit_PCD8544.h> // LCD utils
 #include <PCP.hpp>
 #include <Utils.hpp>
+#include <game.hpp>
 
 // Pin definitions
 // Accelerometer Pins

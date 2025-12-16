@@ -8,10 +8,12 @@
 #include <RMS.hpp>
 #include <PCP.hpp>
 #include <Utils.hpp>
+#include <game.hpp>
 
 void setup()
 {
-  Serial.begin(115200);
+  //Serial.begin(115200);
+  Serial.begin(9600);
   delay(1000);  // Give serial time to initialize
   
   // I2C Accelerometer init
@@ -34,17 +36,14 @@ void setup()
   // Button init
   pinMode(SELBUTTON_PIN, INPUT_PULLUP);
   pinMode(CYCLEBUTTON_PIN, INPUT_PULLUP);
-    
+
+
   // Task init
+  pcp_mutex_init(&xButtonMutex);
   createRmsTasks();  
+  pcp_mutex_set_ceiling(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
+  
   Serial.println("main: All tasks initialized.");
-
-  // Mutex init
-  pcp_mutex_init(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
-  pcp_mutex_init(&xAccel1Mutex , pcp_mutex_init_find_ceiling(xAccel1Mutex.mutexHandle));
-  pcp_mutex_init(&xAccel2Mutex , pcp_mutex_init_find_ceiling(xAccel2Mutex.mutexHandle));
-  Serial.println("main: All mutexes initialized.");
-
   Serial.printf("main: Scheduler starting...\n");
 }
 
@@ -52,5 +51,6 @@ void loop()
 {
   // Empty - all work is done in FreeRTOS tasks
   // This task runs at lowest priority (1 by default)
+  Serial.println("main: Loop running - sleeping forever.");
   vTaskDelay(portMAX_DELAY);  // Sleep forever
 }
