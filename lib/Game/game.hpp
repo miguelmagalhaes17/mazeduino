@@ -1,8 +1,16 @@
 #pragma once
 #include <Arduino.h>
+#include <Adafruit_PCD8544.h>
+#include <Adafruit_GFX.h>
 
 #define MAZE_WIDTH 16 // trocar depois
 #define MAZE_HEIGHT 16 // trocar depois
+
+extern Adafruit_PCD8544 lcd1;
+extern Adafruit_PCD8544 lcd2;
+
+
+
 
 enum GameState {
     MENU = 0, 
