@@ -26,76 +26,126 @@ bool prevCycleButtonState = 0;
 
 // Task Implementations
 // Read both buttons
+//void TaskReadButtons(void*)
+//{
+//  Serial.println("TaskReadButtons: Reading button states...");
+//  readSelectButtonState = !digitalRead(SELBUTTON_PIN);
+//  readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
+//  
+//  if(readSelectButtonState != prevSelectButtonState)
+//  {
+//    pcp_mutex_lock(&xButtonMutex);
+//    selectButtonState = readSelectButtonState;
+//    prevSelectButtonState = readSelectButtonState;    
+//    pcp_mutex_unlock(&xButtonMutex);
+//  }
+//  
+//  if(readCycleButtonState != prevCycleButtonState)
+//  {
+//    pcp_mutex_lock(&xButtonMutex);
+//    cycleButtonState = readCycleButtonState;
+//    prevCycleButtonState = readCycleButtonState;
+//    pcp_mutex_unlock(&xButtonMutex);
+//  }
+//
+//  #ifdef DEBUG
+//	Serial.printf("TaskReadButtons: Select Button: %d\n"
+//                "Cycle Button: %d\n"
+//                , selectButtonState , cycleButtonState);
+//  #endif
+//  
+//}
+
 void TaskReadButtons(void*)
 {
-  readSelectButtonState = !digitalRead(SELBUTTON_PIN);
-  readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+  const TickType_t xPeriod = pdMS_TO_TICKS(50);
+  for(;;){
+    Serial.println("TaskReadButtons: Reading button states...");
+    Serial.println(digitalRead(SELBUTTON_PIN));
+    Serial.println(digitalRead(CYCLEBUTTON_PIN));
+    Serial.println("----");
+    // TODO
+    // PA ESTA MERDA NAO FUNCIONA NÃO LÊ DIREITO
+    readSelectButtonState = !digitalRead(SELBUTTON_PIN);
+    readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
+    if(readSelectButtonState != prevSelectButtonState){
+      pcp_mutex_lock(&xButtonMutex);
+      selectButtonState = readSelectButtonState;
+      prevSelectButtonState = readSelectButtonState;    
+      pcp_mutex_unlock(&xButtonMutex);
+    }
   
-  if(readSelectButtonState != prevSelectButtonState)
-  {
-    pcp_mutex_lock(&xButtonMutex);
-    selectButtonState = readSelectButtonState;
-    prevSelectButtonState = readSelectButtonState;    
-    pcp_mutex_unlock(&xButtonMutex);
-  }
-  
-  if(readCycleButtonState != prevCycleButtonState)
-  {
-    pcp_mutex_lock(&xButtonMutex);
-    cycleButtonState = readCycleButtonState;
-    prevCycleButtonState = readCycleButtonState;
-    pcp_mutex_unlock(&xButtonMutex);
-  }
+    if(readCycleButtonState != prevCycleButtonState)
+    {
+      pcp_mutex_lock(&xButtonMutex);
+      cycleButtonState = readCycleButtonState;
+      prevCycleButtonState = readCycleButtonState;
+      pcp_mutex_unlock(&xButtonMutex);
+    }
 
-  #ifdef DEBUG
-	Serial.printf("TaskReadButtons: Select Button: %d\n"
-                "Cycle Button: %d\n"
-                , selectButtonState , cycleButtonState);
-  #endif
-  
+    #ifdef DEBUG
+	  Serial.printf("TaskReadButtons: Select Button: %d\n"
+                  "Cycle Button: %d\n"
+                  , selectButtonState , cycleButtonState);
+    #endif
+    vTaskDelayUntil( &xLastWakeTime, xPeriod );}
 }
 
 // Read accelerometer 1
 void TaskReadAccel1(void*)
 {
-	pcp_mutex_lock(&xAccel1Mutex);
-  accel1.read();  
-  pcp_mutex_unlock(&xAccel1Mutex);
-	
-	#ifdef DEBUG
-		Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
-					  accel1.accelData.x,
-            accel1.accelData.y,
-            accel1.accelData.z);		
-	#endif
+  for(;;){
+	  pcp_mutex_lock(&xAccel1Mutex);
+    accel1.read();  
+    pcp_mutex_unlock(&xAccel1Mutex);
+    
+	  #ifdef DEBUG
+	  	Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
+	  				  accel1.accelData.x,
+              accel1.accelData.y,
+              accel1.accelData.z);		
+	  #endif
+  }
 }
 
 // Read accelerometer 2
 void TaskReadAccel2(void*)
 {
-	pcp_mutex_lock(&xAccel2Mutex);
-  accel2.read();
-  pcp_mutex_unlock(&xAccel2Mutex);
-	
-	#ifdef DEBUG	
-		Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
-					  accel2.accelData.x,
-            accel2.accelData.y,
-            accel2.accelData.z);	
-	#endif
+  for(;;){
+	  pcp_mutex_lock(&xAccel2Mutex);
+    accel2.read();
+    pcp_mutex_unlock(&xAccel2Mutex);
+    
+	  #ifdef DEBUG	
+	  	Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f m/s^2 | ", 
+	  				  accel2.accelData.x,
+              accel2.accelData.y,
+              accel2.accelData.z);	
+	  #endif
+  }
 }
 
 // Write to LCD
 void TaskDisplayLCD(void*)
 {
+  for(;;){}
 	// lcd1 lcd2
 }
 
 // Run Game logic or Main Screen logic
 void TaskGameLogic(void*)
 {
-  // chama as funcoes que pertencem a game.cpp
-  //p.ex
-  // game_init();
-  
+  game_init();
+  for(;;){
+    game_render();
+    pcp_mutex_lock(&xButtonMutex);
+    bool localSelectButton = selectButtonState;
+    bool localCycleButton = cycleButtonState;
+    pcp_mutex_unlock(&xButtonMutex);
+
+    game_update(localSelectButton, localCycleButton);
+
+    
+  }
 }

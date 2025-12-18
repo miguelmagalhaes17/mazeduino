@@ -6,8 +6,9 @@ PCPMutex xAccel1Mutex;
 PCPMutex xAccel2Mutex;
 
 // Mutex init
-void pcp_mutex_init(PCPMutex* m, int ceiling)
+void pcp_mutex_init(PCPMutex* m)
 {
+    Serial.println("pcp_mutex_init: Initializing mutex...");
     m->mutexHandle = xSemaphoreCreateMutex();
     
     if(m->mutexHandle == NULL) 
@@ -17,7 +18,7 @@ void pcp_mutex_init(PCPMutex* m, int ceiling)
     }
 
     m->currentTask = NULL;
-    m->mutexCeiling = ceiling;
+    m->mutexCeiling = 0;
     m->mutexSaved = 0;
 }
 
@@ -48,4 +49,9 @@ void pcp_mutex_unlock(PCPMutex* m)
     m->currentTask = NULL;
 
     xSemaphoreGive(m->mutexHandle);
+}
+
+void pcp_mutex_set_ceiling(PCPMutex* m, int ceiling)
+{
+    m->mutexCeiling = ceiling;
 }

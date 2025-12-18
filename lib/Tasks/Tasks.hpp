@@ -7,6 +7,7 @@
 #include <Adafruit_PCD8544.h> // LCD utils
 #include <PCP.hpp>
 #include <Utils.hpp>
+#include <game.hpp>
 
 // Pin definitions
 // Accelerometer Pins
@@ -16,8 +17,8 @@
 #define ACCEL2_SCL_PIN 15
 
 // Button Pins
-#define SELBUTTON_PIN 16
-#define CYCLEBUTTON_PIN 17
+#define SELBUTTON_PIN 16 // cabo laranja
+#define CYCLEBUTTON_PIN 17 // cabo azul
 
 // LCD Pins
 #define LCD1_CLK_PIN 11

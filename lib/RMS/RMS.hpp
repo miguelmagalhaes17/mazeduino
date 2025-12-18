@@ -5,7 +5,7 @@
 #include <vector>
 #include <Utils.hpp>
 
-#define NUMBER_OF_TASKS 5
+#define NUMBER_OF_TASKS 1
 
 struct PCPMutex; // Forward declaration to avoid circular includes
 

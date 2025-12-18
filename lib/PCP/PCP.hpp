@@ -16,6 +16,7 @@ extern PCPMutex xAccel1Mutex;
 extern PCPMutex xAccel2Mutex;
 
 // Function declaration
-void pcp_mutex_init(PCPMutex* m, int ceiling);
+void pcp_mutex_init(PCPMutex* m);
 void pcp_mutex_lock(PCPMutex* m);
 void pcp_mutex_unlock(PCPMutex* m);
+void pcp_mutex_set_ceiling(PCPMutex* m, int ceiling);
