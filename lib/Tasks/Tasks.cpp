@@ -136,8 +136,16 @@ void TaskDisplayLCD(void*)
 // Run Game logic or Main Screen logic
 void TaskGameLogic(void*)
 {
+  game_init();
   for(;;){
-    game_init();
     game_render();
+    pcp_mutex_lock(&xButtonMutex);
+    bool localSelectButton = selectButtonState;
+    bool localCycleButton = cycleButtonState;
+    pcp_mutex_unlock(&xButtonMutex);
+
+    game_update(localSelectButton, localCycleButton);
+
+    
   }
 }

@@ -99,5 +99,7 @@ void game_render() {
 }
 }
 
-
-
+void game_update(bool selectButton, bool cycleButton) {
+    Serial.println("game_update: Updating game state...");
+    switch(currentGameState)
+}

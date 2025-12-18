@@ -28,6 +28,15 @@ struct ball {
     float y_velocity;
 };
 
+struct DisplayState {
+    GameState currentState;
+    Select menuSelection;
+    float ballX, ballY;
+    //mais cenas de display que possamos querer
+};
+
+extern DisplayState displayState;
+
 void game_init();
 void game_render();
 
