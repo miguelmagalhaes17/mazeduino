@@ -129,7 +129,13 @@ void TaskReadAccel2(void*)
 // Write to LCD
 void TaskDisplayLCD(void*)
 {
-  for(;;){}
+  for(;;){
+    pcp_mutex_lock(&xDisplayStateMutex);
+    Select localSelection = displayState.menuSelection;
+    pcp_mutex_unlock(&xDisplayStateMutex);
+
+    game_render(displayState.currentState, localSelection, displayState.ballX, displayState.ballY);
+  }
 	// lcd1 lcd2
 }
 

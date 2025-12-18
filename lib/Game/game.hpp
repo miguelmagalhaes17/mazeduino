@@ -10,8 +10,14 @@
 extern Adafruit_PCD8544 lcd1;
 extern Adafruit_PCD8544 lcd2;
 
+enum Select {
+    PLAY = 0,
+    CREDITS = 1,
+    METRICS = 2,
+    SELECT_MAX
+};
 
-
+Select selectMode;
 
 enum GameState {
     MENU = 0, 
@@ -38,13 +44,9 @@ struct DisplayState {
 extern DisplayState displayState;
 
 void game_init();
-void game_render();
+void game_render(GameState state, Select selection, float ballX, float ballY);
+void game_update(bool selectButton, bool cycleButton);
 
-//funcao jogo
-
-//funcao jogo
-
-//funcao jogo
 
 
 extern GameState currentGameState;
