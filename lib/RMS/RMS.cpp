@@ -3,11 +3,11 @@
 // Task array
 // Add NULL to end of mutex array, otherwise PCP functions die
 RmsTask tasks[NUMBER_OF_TASKS] = {
-  {TaskReadButtons , "ReadButtons" , 4096 , 50 , 0 , NULL , NULL , {&xButtonMutex , NULL}},
-  //{TaskReadAccel1 , "ReadAccel1" , 4096 , 33 , 0 , NULL , NULL , {&xAccel1Mutex , NULL}},
-  //{TaskReadAccel2 , "ReadAccel2" , 4096 , 33 , 0 , NULL , NULL , {&xAccel1Mutex , NULL}},
-  //{TaskDisplayLCD , "DisplayLCD" , 4096 , 33 , 0 , NULL , NULL , {NULL}},
-  //{TaskGameLogic , "GameLogic" , 4096 , 33 , 0 , NULL , NULL , {&xButtonMutex , &xAccel1Mutex , &xAccel2Mutex , NULL}},
+  {TaskReadButtons , "ReadButtons" , 4096 , 50 , 0 , NULL  , {&xButtonMutex , NULL}},
+  //{TaskReadAccel1 , "ReadAccel1" , 4096 , 33 , 0 , NULL , {&xAccel1Mutex , NULL}},
+  //{TaskReadAccel2 , "ReadAccel2" , 4096 , 33 , 0 , NULL , {&xAccel1Mutex , NULL}},
+  //{TaskDisplayLCD , "DisplayLCD" , 4096 , 33 , 0 , NULL , {NULL}},
+  //{TaskGameLogic , "GameLogic" , 4096 , 33 , 0 , NULL , {&xButtonMutex , &xAccel1Mutex , &xAccel2Mutex , NULL}},
 };
 
 // Task related varibles

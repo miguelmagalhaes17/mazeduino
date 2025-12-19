@@ -1,8 +1,8 @@
 #include "Utils.hpp"
 
-void time_calculations(TaskTiming* tt)
+void tasK_time_calculations(TaskTiming* tt, int timeStart, int timeEnd)
 {
-    int timeDiff = tt->timeEnd - tt->timeStart;    
+    int timeDiff = timeEnd - timeStart;    
     tt->timeCount += 1;
     tt->timeSum += timeDiff;
     if(timeDiff > tt->timeMax) tt->timeMax = timeDiff;

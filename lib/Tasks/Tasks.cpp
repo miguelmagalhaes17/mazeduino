@@ -24,6 +24,9 @@ bool cycleButtonState = 0;
 bool prevSelectButtonState = 0;
 bool prevCycleButtonState = 0;
 
+//NSV struct declaration
+//nvsVec[eTaskReadButtons] = {"ButtonsTask", NULL};
+
 // Task Implementations
 // Read both buttons
 //void TaskReadButtons(void*)
@@ -89,7 +92,9 @@ void TaskReadButtons(void*)
                   "Cycle Button: %d\n"
                   , selectButtonState , cycleButtonState);
     #endif
-    vTaskDelayUntil( &xLastWakeTime, xPeriod );}
+
+    vTaskDelayUntil(&xLastWakeTime, xPeriod);
+  }
 }
 
 // Read accelerometer 1

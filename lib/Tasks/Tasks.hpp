@@ -8,6 +8,7 @@
 #include <PCP.hpp>
 #include <Utils.hpp>
 #include <game.hpp>
+#include <vector>
 
 // Pin definitions
 // Accelerometer Pins
@@ -31,6 +32,19 @@
 #define LCD2_DC_PIN 4
 #define LCD2_CS_PIN 3
 #define LCD2_RST_PIN 2
+
+// Enumeration for all tasks
+enum Tasks {
+    eTaskReadButtons,
+    eTaskReadAccel1,
+    eTaskReadAccel2,
+    eTaskDisplayLCD,
+    eTaskGameLogic
+};
+
+// Vector with info to save to non-volatile memory
+// This won't work correctly if all tasks are not defined
+extern std::vector<NVSSave> nvsVec[NUMBER_OF_TASKS];
 
 // Accelerometer objects
 extern Adafruit_LSM303 accel1;

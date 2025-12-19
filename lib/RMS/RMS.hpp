@@ -5,8 +5,6 @@
 #include <vector>
 #include <Utils.hpp>
 
-#define NUMBER_OF_TASKS 1
-
 struct PCPMutex; // Forward declaration to avoid circular includes
 
 // RMS Task Structure
@@ -17,7 +15,6 @@ typedef struct RmsTask {
   uint32_t periodMs;  
   UBaseType_t priority;
   TaskHandle_t handle;
-  TaskTiming taskTime;
   std::vector<PCPMutex*> mutexes;
 } RmsTask;
 
