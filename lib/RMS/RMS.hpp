@@ -17,6 +17,7 @@ typedef struct RmsTask {
   uint32_t periodMs;  
   UBaseType_t priority;
   TaskHandle_t handle;
+  TaskTiming taskTime;
   std::vector<PCPMutex*> mutexes;
 } RmsTask;
 

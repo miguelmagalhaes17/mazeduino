@@ -17,7 +17,7 @@ enum Select {
     SELECT_MAX
 };
 
-Select selectMode;
+extern Select selectMode;
 
 enum GameState {
     MENU = 0, 
