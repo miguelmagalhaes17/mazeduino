@@ -59,14 +59,8 @@ bool prevCycleButtonState = 0;
 void TaskReadButtons(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
-  const TickType_t xPeriod = pdMS_TO_TICKS(50);
+  const TickType_t xPeriod = pdMS_TO_TICKS();
   for(;;){
-    Serial.println("TaskReadButtons: Reading button states...");
-    Serial.println(digitalRead(SELBUTTON_PIN));
-    Serial.println(digitalRead(CYCLEBUTTON_PIN));
-    Serial.println("----");
-    // TODO
-    // PA ESTA MERDA NAO FUNCIONA NÃO LÊ DIREITO
     readSelectButtonState = !digitalRead(SELBUTTON_PIN);
     readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
     if(readSelectButtonState != prevSelectButtonState){
@@ -85,11 +79,12 @@ void TaskReadButtons(void*)
     }
 
     #ifdef DEBUG
-	  Serial.printf("TaskReadButtons: Select Button: %d\n"
+	  Serial.printf("TaskReadButtons: \nSelect Button: %d\n"
                   "Cycle Button: %d\n"
                   , selectButtonState , cycleButtonState);
     #endif
-    vTaskDelayUntil( &xLastWakeTime, xPeriod );}
+    vTaskDelayUntil( &xLastWakeTime, xPeriod );
+  }
 }
 
 // Read accelerometer 1
@@ -130,11 +125,11 @@ void TaskReadAccel2(void*)
 void TaskDisplayLCD(void*)
 {
   for(;;){
-    pcp_mutex_lock(&xDisplayStateMutex);
+  /*  pcp_mutex_lock(&xDisplayStateMutex);
     Select localSelection = displayState.menuSelection;
     pcp_mutex_unlock(&xDisplayStateMutex);
 
-    game_render(displayState.currentState, localSelection, displayState.ballX, displayState.ballY);
+    game_render(displayState.currentState, localSelection, displayState.ballX, displayState.ballY);*/
   }
 	// lcd1 lcd2
 }
@@ -142,9 +137,9 @@ void TaskDisplayLCD(void*)
 // Run Game logic or Main Screen logic
 void TaskGameLogic(void*)
 {
-  game_init();
+  //game_init();
   for(;;){
-    game_render();
+    /*game_render();
     pcp_mutex_lock(&xButtonMutex);
     bool localSelectButton = selectButtonState;
     bool localCycleButton = cycleButtonState;
@@ -152,6 +147,6 @@ void TaskGameLogic(void*)
 
     game_update(localSelectButton, localCycleButton);
 
-    
+   */ 
   }
 }

@@ -1,5 +1,5 @@
 #include "game.hpp"
-
+/*
 GameState currentGameState = MENU;
 ball gameBall;
 
@@ -21,7 +21,7 @@ void game_init(){
 
 
 void game_render(GameState state, Select selection, float ballX, float ballY) {
-    Serial.println("game_render: Rendering game state...");
+   /* Serial.println("game_render: Rendering game state...");
     switch(currentGameState) {
         case MENU:
 
@@ -80,4 +80,4 @@ void game_update(bool selectButton, bool cycleButton) {
 
         break;
     }
-}
+}*/

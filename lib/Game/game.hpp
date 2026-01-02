@@ -1,5 +1,5 @@
 #pragma once
-#include <Arduino.h>
+/*#include <Arduino.h>
 #include <Adafruit_PCD8544.h>
 #include <Adafruit_GFX.h>
 #include <Tasks.hpp>
@@ -50,4 +50,4 @@ void game_update(bool selectButton, bool cycleButton);
 
 
 extern GameState currentGameState;
-extern ball gameBall;
+extern ball gameBall;*/

@@ -39,12 +39,17 @@ void setup()
 
 
   // Task init
-  pcp_mutex_init(&xButtonMutex);
+  //pcp_mutex_init(&xButtonMutex);
+  //pcp_mutex_init(&xAccel1Mutex);
+  pcp_mutex_init(&xAccel2Mutex);
   createRmsTasks();  
   pcp_mutex_set_ceiling(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
   
   Serial.println("main: All tasks initialized.");
   Serial.printf("main: Scheduler starting...\n");
+
+  for(int i = 0; i < NUMBER_OF_TASKS; i++) vTaskResume(tasks[i].handle);
+
 }
 
 void loop()
