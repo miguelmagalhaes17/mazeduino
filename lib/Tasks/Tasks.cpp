@@ -71,10 +71,11 @@ void TaskReadAccel1(void*)
     pcp_mutex_unlock(&xAccel1Mutex);
     
 	  #ifdef DEBUG
-	  	Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f m/s^2 \n", 
-	  				  eventAccel1.acceleration.x,
-              eventAccel1.acceleration.y,
-              eventAccel1.acceleration.z);	
+	  	Serial.printf("TaskReadAccel1: degX=%.2f degY=%.2f pitch=%.2f roll=%.2f\n", 
+	  				  eventAccel1.orientation.x,
+              eventAccel1.orientation.y,
+              eventAccel1.orientation.pitch,
+              eventAccel1.orientation.roll);	
 	  #endif
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
