@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
-#include <Adafruit_LSM303.h> // Accelerometer utils
+#include <Adafruit_LSM303_Accel.h> // Accelerometer utils
 #include <Adafruit_GFX.h> // Auxilary Library for LCD
 #include <Adafruit_PCD8544.h> // LCD utils
 #include <PCP.hpp>
@@ -11,10 +11,10 @@
 
 // Pin definitions
 // Accelerometer Pins
-#define ACCEL1_SDA_PIN 12
-#define ACCEL1_SCL_PIN 13
-#define ACCEL2_SDA_PIN 14
-#define ACCEL2_SCL_PIN 15
+#define ACCEL1_SDA_PIN 14 // cabo azul
+#define ACCEL1_SCL_PIN 15 // cabo laranja
+//#define ACCEL2_SDA_PIN 12 // cabo azul
+//#define ACCEL2_SCL_PIN 13 // cabo laranja
 
 // Button Pins
 #define SELBUTTON_PIN 16 // cabo laranja
@@ -33,8 +33,12 @@
 #define LCD2_RST_PIN 2
 
 // Accelerometer objects
-extern Adafruit_LSM303 accel1;
-extern Adafruit_LSM303 accel2;
+extern Adafruit_LSM303_Accel_Unified accel1;
+//extern Adafruit_LSM303_Accel_Unified accel2;
+
+// Accel events
+extern sensors_event_t eventAccel1;
+//extern sensors_event_t eventAccel2;
 
 // LCD objects
 extern Adafruit_PCD8544 lcd1;										
@@ -51,6 +55,6 @@ extern bool prevCycleButtonState;
 // Task declaration                                         
 void TaskReadButtons(void*);
 void TaskReadAccel1(void*);
-void TaskReadAccel2(void*);
+//void TaskReadAccel2(void*);
 void TaskDisplayLCD(void*);
 void TaskGameLogic(void*);

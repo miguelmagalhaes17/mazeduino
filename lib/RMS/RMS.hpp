@@ -5,8 +5,6 @@
 #include <vector>
 #include <Utils.hpp>
 
-#define NUMBER_OF_TASKS 1
-
 struct PCPMutex; // Forward declaration to avoid circular includes
 
 // RMS Task Structure
