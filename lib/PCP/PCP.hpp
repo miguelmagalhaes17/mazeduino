@@ -15,6 +15,7 @@ extern PCPMutex xButtonMutex;
 extern PCPMutex xAccel1Mutex;
 extern PCPMutex xAccel2Mutex;
 extern PCPMutex xDisplayStateMutex; 
+extern PCPMutex xGameStateMutex;
 
 // Function declaration
 void pcp_mutex_init(PCPMutex* m);

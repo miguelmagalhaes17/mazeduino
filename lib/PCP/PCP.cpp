@@ -5,6 +5,7 @@ PCPMutex xButtonMutex;
 PCPMutex xAccel1Mutex;
 PCPMutex xAccel2Mutex;
 PCPMutex xDisplayStateMutex;
+PCPMutex xGameStateMutex;
 
 // Mutex init
 void pcp_mutex_init(PCPMutex* m)
