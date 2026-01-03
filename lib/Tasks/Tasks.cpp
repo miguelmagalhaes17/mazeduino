@@ -122,6 +122,33 @@ void TaskUpdateGamePhysics(void*){
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
+
+void TaskGameLogic(void* pvParameters) {
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xPeriod = pdMS_TO_TICKS(50);
+    
+    Serial.println("TaskGameLogic: Task started");
+    
+    for(;;) {
+        // Copy button states
+        pcp_mutex_lock(&xButtonMutex);
+        bool localSelectPressed = selectButtonPressed;
+        bool localCyclePressed = cycleButtonPressed;
+        
+        // Clear edge-triggered flags
+        selectButtonPressed = false;
+        cycleButtonPressed = false;
+        pcp_mutex_unlock(&xButtonMutex);
+        
+        // Update game logic
+        pcp_mutex_lock(&xGameStateMutex);
+        game_update_logic(localSelectPressed, localCyclePressed);
+        pcp_mutex_unlock(&xGameStateMutex);
+        
+        vTaskDelayUntil(&xLastWakeTime, xPeriod);
+    }
+}
+
 // Write to LCD
 void TaskRenderLCD1(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
@@ -323,20 +350,4 @@ void TaskRenderLCD2(void* pvParameters) {
         
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
-}
-// Run Game logic or Main Screen logic
-void TaskGameLogic(void*)
-{
-  //game_init();
-  for(;;){
-    /*game_render();
-    pcp_mutex_lock(&xButtonMutex);
-    bool localSelectButton = selectButtonState;
-    bool localCycleButton = cycleButtonState;
-    pcp_mutex_unlock(&xButtonMutex);
-
-    game_update(localSelectButton, localCycleButton);
-
-   */ 
-  }
 }
