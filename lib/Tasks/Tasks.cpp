@@ -1,11 +1,11 @@
 #include "Tasks.hpp"
 
 // Accelerometer objects
-Adafruit_LSM303_Accel_Unified accel1(12345);
+//Adafruit_LSM303_Accel_Unified accel1(12345);
 //Adafruit_LSM303_Accel_Unified accel2(67890);
 
 // Accel events
-sensors_event_t eventAccel1;
+//sensors_event_t eventAccel1;
 //sensors_event_t eventAccel2;
 
 // LCD objects
@@ -67,39 +67,42 @@ void TaskReadAccel1(void*)
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL1_PERIOD);
   for(;;){
 	  pcp_mutex_lock(&xAccel1Mutex);
-    accel1.getEvent(&eventAccel1);
+    readData(accel1, I2C_0);
     pcp_mutex_unlock(&xAccel1Mutex);
     
 	  #ifdef DEBUG
-	  	Serial.printf("TaskReadAccel1: degX=%.2f degY=%.2f pitch=%.2f roll=%.2f\n", 
-	  				  eventAccel1.orientation.x,
-              eventAccel1.orientation.y,
-              eventAccel1.orientation.pitch,
-              eventAccel1.orientation.roll);	
+	  	Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
+	  				  accel1.x,
+              accel1.y,
+              accel1.z,
+              accel1.roll,
+              accel1.pitch);	
 	  #endif
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
 }
 
-/*// Read accelerometer 2
+// Read accelerometer 2
 void TaskReadAccel2(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL2_PERIOD);  
   for(;;){
 	  pcp_mutex_lock(&xAccel2Mutex);
-    accel1.getEvent(&eventAccel2);
+    readData(accel2, I2C_1);
     pcp_mutex_unlock(&xAccel2Mutex);
     
 	  #ifdef DEBUG	
-	  	Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f m/s^2 \n", 
-	  				  eventAccel2.acceleration.x,
-              eventAccel2.acceleration.y,
-              eventAccel2.acceleration.z);
+	  	Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
+	  				  accel2.x,
+              accel2.y,
+              accel2.z,
+              accel2.roll,
+              accel2.pitch);
 	  #endif
   }
   vTaskDelayUntil( &xLastWakeTime, xPeriod );
-}*/
+}
 
 // Write to LCD
 void TaskDisplayLCD(void*)

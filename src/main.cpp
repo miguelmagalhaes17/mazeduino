@@ -9,29 +9,37 @@
 #include <PCP.hpp>
 #include <Utils.hpp>
 #include <game.hpp>
+#include <Accel_Utils.hpp>
 
 void setup()
 {
-  //Serial.begin(115200);
   Serial.begin(9600);
   delay(1000);  // Give serial time to initialize
   
   // I2C Accelerometer init (IF NOT USING ONE OF THE ACCELS COMMENT THE CORRESPODING Wire)
-  Wire.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
+  //Wire.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
   //Wire1.begin(ACCEL2_SDA_PIN, ACCEL2_SCL_PIN);
 
+  // Start both I2C buses
+  I2C_0.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
+  I2C_1.begin(ACCEL2_SDA_PIN, ACCEL2_SCL_PIN);
+  initAccel(I2C_0);
+  initAccel(I2C_1);
+
   // Check accelerometers
+  /*
   if(!accel1.begin(LSM303_ADDRESS_ACCEL, &Wire)) {
     Serial.println("main: Accelerometer 1 not found!\n");    
   } else {
     Serial.println("main: Accelerometer 1 initialized\n");
   }
   
-  /*if(!accel2.begin(LSM303_ADDRESS_ACCEL, &Wire1)) {  // Use Wire1 for second accelerometer
+  if(!accel2.begin(LSM303_ADDRESS_ACCEL, &Wire1)) {  // Use Wire1 for second accelerometer
     Serial.println("main: Accelerometer 2 not found!\n");
   } else {
     Serial.println("main: Accelerometer 2 initialized\n");
-  }*/
+  }
+  */
 
   // Button init
   pinMode(SELBUTTON_PIN, INPUT_PULLUP);
@@ -40,16 +48,14 @@ void setup()
   // Task init
   pcp_mutex_init(&xButtonMutex);
   pcp_mutex_init(&xAccel1Mutex);
-  //pcp_mutex_init(&xAccel2Mutex);
+  pcp_mutex_init(&xAccel2Mutex);
   createRmsTasks();  
   pcp_mutex_set_ceiling(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
   pcp_mutex_set_ceiling(&xAccel1Mutex , pcp_mutex_init_find_ceiling(xAccel1Mutex.mutexHandle));
+  pcp_mutex_set_ceiling(&xAccel2Mutex , pcp_mutex_init_find_ceiling(xAccel2Mutex.mutexHandle));
   
   Serial.println("main: All tasks initialized.\n");
   Serial.printf("main: Scheduler starting...\n");
-
-  //for(int i = 0; i < NUMBER_OF_TASKS; i++) vTaskResume(tasks[i].handle);
-
 }
 
 void loop()

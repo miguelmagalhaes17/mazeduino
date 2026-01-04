@@ -6,13 +6,13 @@
 RmsTask tasks[NUMBER_OF_TASKS] = {
   {TaskReadButtons , "ReadButtons" , 4096 , READBUTTON_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
   {TaskReadAccel1 , "ReadAccel1" , 4096 , ACCEL1_PERIOD , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
-  //{TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}},
+  {TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}},
   //{TaskDisplayLCD , "DisplayLCD" , 4096 , LCD_PERIOD , 0 , NULL /*, NULL*/ , {NULL}},
   //{TaskGameLogic , "GameLogic" , 4096 , GAME_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , &xAccel1Mutex , &xAccel2Mutex , NULL}},
 };
 
 // Task related varibles
-int taskCount = NUMBER_OF_TASKS;//(tasks) / sizeof(tasks[0]);
+int taskCount = NUMBER_OF_TASKS;
 
 // RMS Priority Assignment
 void assignRmsPriorities() {
