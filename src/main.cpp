@@ -66,12 +66,8 @@ void setup()
   pcp_mutex_init(&xGameStateMutex);
   pcp_mutex_init(&xDisplayStateMutex);
 
-  
-  
   // Create tasks in SUSPENDED state
   createRmsTasks();
-
- 
   
   // Configure mutex ceilings BEFORE starting tasks
   pcp_mutex_set_ceiling(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
@@ -79,17 +75,15 @@ void setup()
   pcp_mutex_set_ceiling(&xAccel2Mutex , pcp_mutex_init_find_ceiling(xAccel2Mutex.mutexHandle));
   pcp_mutex_set_ceiling(&xGameStateMutex , pcp_mutex_init_find_ceiling(xGameStateMutex.mutexHandle));
   pcp_mutex_set_ceiling(&xDisplayStateMutex , pcp_mutex_init_find_ceiling(xDisplayStateMutex.mutexHandle));
-
-  //vTaskStartScheduler();
   
   Serial.println("main: All tasks initialized and mutexes configured.\n");
   Serial.printf("main: Starting scheduler and resuming tasks...\n");
+  vTaskStartScheduler();
+  Serial.println("=== NUNCA DEVE CHEGAR AQUI CRLLLLLLLLLL ==="); // não é suposto passar o scheduler depois dele ser iniciado
   
   // NOW start all tasks - they have proper mutex ceilings and all tasks exist
   //startRmsTasks();
   //Serial.printf("main: Scheduler starting...\n");
-
-  
 
 }
 

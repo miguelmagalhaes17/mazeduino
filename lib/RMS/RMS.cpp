@@ -66,7 +66,7 @@ void createRmsTasks()
     );
 
     // Suspend immediately so it doesn't start running before setup() completes
-    //vTaskSuspend(tasks[i].handle);
+    vTaskSuspend(tasks[i].handle);
 	
 	#ifdef DEBUG
 		Serial.printf("createRmsTasks: Created %s with priority %u, period %ums (suspended)\n", 
@@ -94,9 +94,9 @@ int pcp_mutex_init_find_ceiling(SemaphoreHandle_t handle)
 {
     int k = 0;
     int highestPriority = 0;
-    int i = 0;
+    int i;
 
-    for(int i ; i < taskCount ; i++)
+    for(i = 0; i < taskCount ; i++)
     {
         k = 0;
         while(tasks[i].mutexes[k] != NULL)
