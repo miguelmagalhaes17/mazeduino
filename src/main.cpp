@@ -45,17 +45,52 @@ void setup()
   pinMode(SELBUTTON_PIN, INPUT_PULLUP);
   pinMode(CYCLEBUTTON_PIN, INPUT_PULLUP);
 
+  // LCD init (must be before any display calls)
+  lcd1.begin();
+  lcd1.setContrast(60);
+  lcd1.clearDisplay();
+  lcd1.display();
+
+  lcd2.begin();
+  lcd2.setContrast(60);
+  lcd2.clearDisplay();
+  lcd2.display();
+
+  // Game state init
+  game_init();
+
   // Task init
   pcp_mutex_init(&xButtonMutex);
   pcp_mutex_init(&xAccel1Mutex);
   pcp_mutex_init(&xAccel2Mutex);
-  createRmsTasks();  
+  pcp_mutex_init(&xGameStateMutex);
+  pcp_mutex_init(&xDisplayStateMutex);
+
+  
+  
+  // Create tasks in SUSPENDED state
+  createRmsTasks();
+
+ 
+  
+  // Configure mutex ceilings BEFORE starting tasks
   pcp_mutex_set_ceiling(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
   pcp_mutex_set_ceiling(&xAccel1Mutex , pcp_mutex_init_find_ceiling(xAccel1Mutex.mutexHandle));
   pcp_mutex_set_ceiling(&xAccel2Mutex , pcp_mutex_init_find_ceiling(xAccel2Mutex.mutexHandle));
+  pcp_mutex_set_ceiling(&xGameStateMutex , pcp_mutex_init_find_ceiling(xGameStateMutex.mutexHandle));
+  pcp_mutex_set_ceiling(&xDisplayStateMutex , pcp_mutex_init_find_ceiling(xDisplayStateMutex.mutexHandle));
+
+  //vTaskStartScheduler();
   
-  Serial.println("main: All tasks initialized.\n");
-  Serial.printf("main: Scheduler starting...\n");
+  Serial.println("main: All tasks initialized and mutexes configured.\n");
+  Serial.printf("main: Starting scheduler and resuming tasks...\n");
+  
+  // NOW start all tasks - they have proper mutex ceilings and all tasks exist
+  //startRmsTasks();
+  //Serial.printf("main: Scheduler starting...\n");
+
+  
+
 }
 
 void loop()

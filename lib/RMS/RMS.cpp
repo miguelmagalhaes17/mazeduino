@@ -3,26 +3,23 @@
 // Task array
 // Add NULL to end of mutex array, otherwise PCP functions die
 // IF CHANGE PERIOD HERE CHANGE IN THE TASKS
-RmsTask tasks[NUMBER_OF_TASKS] = {
-  {TaskReadButtons , "ReadButtons" , 4096 , 10 , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
-  //{TaskReadAccel1 , "ReadAccel1" , 4096 , 50 , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
-  //{TaskReadAccel2 , "ReadAccel2" , 4096 , 33 , 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}},
-  //{TaskUpdatePhysics,  "UpdatePhysics",  4096, 33,  0, NULL, {&xGameStateMutex, &xAccel1Mutex, &xAccel2Mutex, NULL}},
-  //{TaskGameLogic,      "GameLogic",      4096, 50,  0, NULL, {&xGameStateMutex, &xButtonMutex, NULL}},
-  //{TaskRenderLCD1,     "RenderLCD1",     4096, 33,  0, NULL, {&xGameStateMutex, NULL}},
+RmsTask tasks[NUMBER_OF_TASKS] = 
+{
+  {TaskUpdateGamePhysics,  "UpdatePhysics",  4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, &xAccel1Mutex, &xAccel2Mutex, NULL}},
+  {TaskGameLogic,      "GameLogic",      4096, GAME_PERIOD,  0, NULL, {&xGameStateMutex, &xButtonMutex, NULL}},
+  {TaskRenderLCD1,     "RenderLCD1",     4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, NULL}},
   //{TaskRenderLCD2,     "RenderLCD2",     4096, 33,  0, NULL, {&xGameStateMutex, NULL}},
   {TaskReadButtons , "ReadButtons" , 4096 , READBUTTON_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
   {TaskReadAccel1 , "ReadAccel1" , 4096 , ACCEL1_PERIOD , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
-  {TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}},
-  //{TaskDisplayLCD , "DisplayLCD" , 4096 , LCD_PERIOD , 0 , NULL /*, NULL*/ , {NULL}},
-  //{TaskGameLogic , "GameLogic" , 4096 , GAME_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , &xAccel1Mutex , &xAccel2Mutex , NULL}},
+  {TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}}
 };
 
 // Task related varibles
 int taskCount = NUMBER_OF_TASKS;
 
 // RMS Priority Assignment
-void assignRmsPriorities() {
+void assignRmsPriorities() 
+{
   Serial.println("assignRmsPriorities: Assigning RMS priorities...");
   // Sort tasks by period (shorter period = higher priority)
   for(int i = 0; i < taskCount - 1; i++) {
@@ -40,20 +37,22 @@ void assignRmsPriorities() {
   for(int i = 0; i < taskCount; i++) {
     tasks[i].priority = priority--;
     
-	#ifdef DEBUG
-	  Serial.printf("assignRmsPriorities: Assigned %s priority %u, period %ums\n", 
-                 tasks[i].name, tasks[i].priority, tasks[i].periodMs);
-    #endif
+	
+    Serial.printf("assignRmsPriorities: Assigned %s priority %u, period %ums\n", 
+                tasks[i].name, tasks[i].priority, tasks[i].periodMs);
+
   }
 }
 
 // Create all RMS tasks
-void createRmsTasks() {
+void createRmsTasks() 
+{
   Serial.printf("createRmsTasks: Creating %d RMS tasks...\n", taskCount);
   Serial.printf("sizeoftasks: %d\n", sizeof(tasks));
   Serial.printf("sieoftask[0]: %d\n", sizeof(tasks[0]));
   assignRmsPriorities();
 
+  // Create all tasks in SUSPENDED state first
   for(int i = 0; i < taskCount; i++) {
     Serial.printf("createRmsTasks: Creating task %s...\n", tasks[i].name);
     xTaskCreatePinnedToCore(
@@ -63,17 +62,32 @@ void createRmsTasks() {
       NULL,
       tasks[i].priority,
       &tasks[i].handle,
-      0  // Run on core 1
+      0  // Run on core 0
     );
 
+    // Suspend immediately so it doesn't start running before setup() completes
     //vTaskSuspend(tasks[i].handle);
 	
 	#ifdef DEBUG
-		Serial.printf("createRmsTasks: Created %s with priority %u, period %ums\n", 
+		Serial.printf("createRmsTasks: Created %s with priority %u, period %ums (suspended)\n", 
                   tasks[i].name, tasks[i].priority, tasks[i].periodMs);
 	#endif
   }
+
+  Serial.println("createRmsTasks: All tasks created. Ready to resume after mutex ceilings are set.");
 }
+
+// Resume all tasks - call this AFTER mutex ceilings are configured
+void startRmsTasks() 
+{
+  Serial.println("startRmsTasks: Resuming all tasks...");
+  for(int i = 0; i < taskCount; i++) {
+    vTaskResume(tasks[i].handle);
+    Serial.printf("startRmsTasks: Resumed %s\n", tasks[i].name);
+  }
+  Serial.println("startRmsTasks: All tasks are now running.");
+}
+
 
 // Finds highest priority task and assigns the ceiling accordingly
 int pcp_mutex_init_find_ceiling(SemaphoreHandle_t handle)

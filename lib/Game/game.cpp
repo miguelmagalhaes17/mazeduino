@@ -28,15 +28,15 @@ void game_init(){
     //PLAYERS
     gameState.player1.x = 0;
     gameState.player1.y = 0;
-    gameState.player1.x_velocity = 0;
-    gameState.player1.y_velocity = 0;
+    gameState.player1.velX = 0;
+    gameState.player1.velY = 0;
     gameState.player1.hasFinished = false;
     gameState.player1.finishTime = 0;
 
     gameState.player2.x = 0;
     gameState.player2.y = 0;
-    gameState.player2.x_velocity = 0;
-    gameState.player2.y_velocity = 0;
+    gameState.player2.velX = 0;
+    gameState.player2.velY = 0;
     gameState.player2.hasFinished = false;
     gameState.player2.finishTime = 0;
 
@@ -55,6 +55,7 @@ void game_generate_maze() {
             gameState.maze.walls[row][col] = PREDEFINED_MAZE[row][col];
         }
     }
+
     
     // Start position: top-left corner
     gameState.maze.startX = MAZE_CELL_SIZE + BALL_RADIUS;  // Inside first cell
@@ -80,7 +81,8 @@ void game_update_menu(bool selectPressed, bool cyclePressed) {
         Serial.printf("game_update_menu: Menu selection changed to %d\n", gameState.menuSelection);
     }
     
-    if (selectPressed) {
+    if (selectPressed) 
+    {
         switch (gameState.menuSelection) {
             case PLAY:
                 gameState.mode = PLAYING;

@@ -28,12 +28,17 @@ bool cycleButtonState = 0;
 bool prevSelectButtonState = 0;
 bool prevCycleButtonState = 0;
 
+//AccelerometerData accel1;
+//AccelerometerData accel2;
+
 
 void TaskReadButtons(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   const TickType_t xPeriod = pdMS_TO_TICKS(READBUTTON_PERIOD);
-  for(;;){
+  
+  for(;;)
+  {
     readSelectButtonState = !digitalRead(SELBUTTON_PIN);
     readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
     if(readSelectButtonState != prevSelectButtonState){
@@ -87,7 +92,7 @@ void TaskReadAccel2(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL2_PERIOD);  
-  for(;;){
+    for(;;){
 	  pcp_mutex_lock(&xAccel2Mutex);
     readData(accel2, I2C_1);
     pcp_mutex_unlock(&xAccel2Mutex);
@@ -100,13 +105,13 @@ void TaskReadAccel2(void*)
               accel2.roll,
               accel2.pitch);
 	  #endif
+        vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
-  vTaskDelayUntil( &xLastWakeTime, xPeriod );
 }
 
 void TaskUpdateGamePhysics(void*){
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xPeriod = pdMS_TO_TICKS(33);
+    const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
     const float deltaTime = 0.033f;
     
     Serial.println("TaskUpdatePhysics: Task started");
@@ -114,13 +119,13 @@ void TaskUpdateGamePhysics(void*){
     for(;;) {
         // Copy accel data
         pcp_mutex_lock(&xAccel1Mutex);
-        float localAccel1X = gameState.accel1X;
-        float localAccel1Y = gameState.accel1Y;
+        float localAccel1X = accel1.x;
+        float localAccel1Y = accel1.y;
         pcp_mutex_unlock(&xAccel1Mutex);
         
         pcp_mutex_lock(&xAccel2Mutex);
-        float localAccel2X = gameState.accel2X;
-        float localAccel2Y = gameState.accel2Y;
+        float localAccel2X = accel2.x;
+        float localAccel2Y = accel2.y;
         pcp_mutex_unlock(&xAccel2Mutex);
         
         // Update physics with deltaTime
@@ -132,26 +137,28 @@ void TaskUpdateGamePhysics(void*){
         
         game_update_physics(deltaTime);  // <-- Calls game.cpp function
         pcp_mutex_unlock(&xGameStateMutex);
-        
+
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
 
 void TaskGameLogic(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xPeriod = pdMS_TO_TICKS(50);
+    const TickType_t xPeriod = pdMS_TO_TICKS(GAME_PERIOD);
     
     Serial.println("TaskGameLogic: Task started");
+
+    //game_init();
     
     for(;;) {
         // Copy button states
         pcp_mutex_lock(&xButtonMutex);
-        bool localSelectPressed = selectButtonPressed;
-        bool localCyclePressed = cycleButtonPressed;
+        bool localSelectPressed = selectButtonState;
+        bool localCyclePressed = cycleButtonState;
         
         // Clear edge-triggered flags
-        selectButtonPressed = false;
-        cycleButtonPressed = false;
+        selectButtonState = false;
+        cycleButtonState = false;
         pcp_mutex_unlock(&xButtonMutex);
         
         // Update game logic
@@ -166,7 +173,7 @@ void TaskGameLogic(void* pvParameters) {
 // Write to LCD
 void TaskRenderLCD1(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xPeriod = pdMS_TO_TICKS(33);
+    const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
     
     Serial.println("TaskRenderLCD1: Task started");
     
@@ -175,6 +182,8 @@ void TaskRenderLCD1(void* pvParameters) {
         pcp_mutex_lock(&xGameStateMutex);
         GameState localState = gameState;
         pcp_mutex_unlock(&xGameStateMutex);
+
+        Serial.println("TaskRenderLCD1: Rendering frame");
         
         // Now render based on game mode
         switch (localState.mode) {
@@ -203,7 +212,7 @@ void TaskRenderLCD1(void* pvParameters) {
                 lcd1.println("CREDITS");
                 lcd1.display();
                 break;
-                
+    
             case PLAYING:
             case PAUSED:
                 // Render game
@@ -267,7 +276,7 @@ void TaskRenderLCD1(void* pvParameters) {
 
 void TaskRenderLCD2(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xPeriod = pdMS_TO_TICKS(33);
+    const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
     
     Serial.println("TaskRenderLCD2: Task started");
     

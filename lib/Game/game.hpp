@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
-#include <Adafruit_PCD8544.h>
-#include <Adafruit_GFX.h>
+//#include <Adafruit_PCD8544.h>
+//#include <Adafruit_GFX.h>
 #include <Tasks.hpp>
 
 #define LCD_WIDTH 84 // trocar depois
@@ -32,8 +32,8 @@ enum MenuSelect {
 struct Player {
     float x;
     float y;
-    float x_velocity;
-    float y_velocity;
+    float velX;
+    float velY;
     bool hasFinished;
     uint32_t finishTime;
 
@@ -76,8 +76,8 @@ void game_update_logic(bool selectPressed, bool cyclePressed);
 void game_render_player1();
 void game_render_player2();
 
-bool check_wall_collisions(float x, float y, float radius);
-bool check_finish_collisions(float x, float y, float radius);
+bool check_wall_collision(float x, float y, float radius);
+bool check_finish_collision(float x, float y, float radius);
 
 //void render_maze(Adafruit_PCD8544& lcd);
 //void render_menu(Adafruit_PCD8544& lcd, MenuSelect selection);

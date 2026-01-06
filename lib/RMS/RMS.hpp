@@ -5,6 +5,8 @@
 #include <vector>
 #include <Utils.hpp>
 
+#define DEBUG
+
 struct PCPMutex; // Forward declaration to avoid circular includes
 
 // RMS Task Structure
@@ -26,6 +28,10 @@ extern RmsTask tasks[NUMBER_OF_TASKS];
 extern int taskCount;
 
 // RMS function declaration
+void assignRmsPriorities();
+void createRmsTasks();
+void startRmsTasks();  // NEW: Resume all tasks after mutex setup
+int pcp_mutex_init_find_ceiling(SemaphoreHandle_t handle);
 void assignRmsPriorities();
 void createRmsTasks();
 int pcp_mutex_init_find_ceiling(SemaphoreHandle_t handle); // Used here to avoid circular dependecy because I eat glue
