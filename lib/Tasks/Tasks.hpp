@@ -48,8 +48,10 @@ extern Adafruit_PCD8544 lcd2;
 // Button related variables
 extern bool readSelectButtonState;
 extern bool readCycleButtonState;
+
 extern bool selectButtonState;
 extern bool cycleButtonState;
+
 extern bool prevSelectButtonState;
 extern bool prevCycleButtonState;
 
@@ -57,5 +59,7 @@ extern bool prevCycleButtonState;
 void TaskReadButtons(void*);
 void TaskReadAccel1(void*);
 void TaskReadAccel2(void*);
-void TaskDisplayLCD(void*);
+void TaskUpdateGamePhysics(void*);
 void TaskGameLogic(void*);
+void TaskRenderLCD1(void*);
+void TaskRenderLCD2(void*);

@@ -4,6 +4,13 @@
 // Add NULL to end of mutex array, otherwise PCP functions die
 // IF CHANGE PERIOD HERE CHANGE IN THE TASKS
 RmsTask tasks[NUMBER_OF_TASKS] = {
+  {TaskReadButtons , "ReadButtons" , 4096 , 10 , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
+  //{TaskReadAccel1 , "ReadAccel1" , 4096 , 50 , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
+  //{TaskReadAccel2 , "ReadAccel2" , 4096 , 33 , 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}},
+  //{TaskUpdatePhysics,  "UpdatePhysics",  4096, 33,  0, NULL, {&xGameStateMutex, &xAccel1Mutex, &xAccel2Mutex, NULL}},
+  //{TaskGameLogic,      "GameLogic",      4096, 50,  0, NULL, {&xGameStateMutex, &xButtonMutex, NULL}},
+  //{TaskRenderLCD1,     "RenderLCD1",     4096, 33,  0, NULL, {&xGameStateMutex, NULL}},
+  //{TaskRenderLCD2,     "RenderLCD2",     4096, 33,  0, NULL, {&xGameStateMutex, NULL}},
   {TaskReadButtons , "ReadButtons" , 4096 , READBUTTON_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
   {TaskReadAccel1 , "ReadAccel1" , 4096 , ACCEL1_PERIOD , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
   {TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}},
