@@ -11,10 +11,15 @@ RmsTask tasks[NUMBER_OF_TASKS] = {
   //{TaskGameLogic,      "GameLogic",      4096, 50,  0, NULL, {&xGameStateMutex, &xButtonMutex, NULL}},
   //{TaskRenderLCD1,     "RenderLCD1",     4096, 33,  0, NULL, {&xGameStateMutex, NULL}},
   //{TaskRenderLCD2,     "RenderLCD2",     4096, 33,  0, NULL, {&xGameStateMutex, NULL}},
+  {TaskReadButtons , "ReadButtons" , 4096 , READBUTTON_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
+  {TaskReadAccel1 , "ReadAccel1" , 4096 , ACCEL1_PERIOD , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
+  {TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}},
+  //{TaskDisplayLCD , "DisplayLCD" , 4096 , LCD_PERIOD , 0 , NULL /*, NULL*/ , {NULL}},
+  //{TaskGameLogic , "GameLogic" , 4096 , GAME_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , &xAccel1Mutex , &xAccel2Mutex , NULL}},
 };
 
 // Task related varibles
-int taskCount = NUMBER_OF_TASKS;//(tasks) / sizeof(tasks[0]);
+int taskCount = NUMBER_OF_TASKS;
 
 // RMS Priority Assignment
 void assignRmsPriorities() {
@@ -57,11 +62,11 @@ void createRmsTasks() {
       tasks[i].stackSize,
       NULL,
       tasks[i].priority,
-      &tasks[i].handle/*,
-      1*/  // Run on core 1
+      &tasks[i].handle,
+      0  // Run on core 1
     );
 
-    vTaskSuspend(tasks[i].handle);
+    //vTaskSuspend(tasks[i].handle);
 	
 	#ifdef DEBUG
 		Serial.printf("createRmsTasks: Created %s with priority %u, period %ums\n", 

@@ -4,6 +4,15 @@
 #define DEBUG // Uncomment for debug messages
 #define TIME_TASKS // Uncomment to get time information about tasks
 
+#define NUMBER_OF_TASKS 3
+
+// Task periods
+#define READBUTTON_PERIOD 500
+#define ACCEL1_PERIOD 50
+#define ACCEL2_PERIOD 50
+#define LCD_PERIOD 1000
+#define GAME_PERIOD 1000
+
 // Task Timing Structure
 // Times in micros
 typedef struct TaskTiming {
