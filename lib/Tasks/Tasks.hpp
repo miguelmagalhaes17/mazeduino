@@ -22,16 +22,16 @@
 #define CYCLEBUTTON_PIN 17 // cabo azul
 
 // LCD Pins
-#define LCD1_CLK_PIN 11
-#define LCD1_DIN_PIN 10
-#define LCD1_DC_PIN 9
-#define LCD1_CS_PIN 8
-#define LCD1_RST_PIN 7
-#define LCD2_CLK_PIN 6
-#define LCD2_DIN_PIN 5
-#define LCD2_DC_PIN 4
-#define LCD2_CS_PIN 3
-#define LCD2_RST_PIN 2
+#define LCD1_CLK_PIN 11 // cabo branco
+#define LCD1_DIN_PIN 10 // cabo verde
+#define LCD1_DC_PIN 9   // cabo azul
+#define LCD1_CS_PIN 8   // cabo castanho
+#define LCD1_RST_PIN 7  // cabo laranja
+#define LCD2_CLK_PIN 6  // cabo branco
+#define LCD2_DIN_PIN 5  // cabo verde
+#define LCD2_DC_PIN 4   // cabo azul
+#define LCD2_CS_PIN 3   // cabo castanho
+#define LCD2_RST_PIN 2  // cabo laranja
 
 // Accelerometer objects
 //extern Adafruit_LSM303_Accel_Unified accel1;
