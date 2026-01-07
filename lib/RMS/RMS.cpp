@@ -52,10 +52,13 @@ void createRmsTasks()
   Serial.printf("sieoftask[0]: %d\n", sizeof(tasks[0]));
   assignRmsPriorities();
 
+  //vTaskSuspendAll();  // Suspend scheduler to prevent tasks from starting prematurely
+
   // Create all tasks in SUSPENDED state first
-  for(int i = 0; i < taskCount; i++) {
-    Serial.printf("createRmsTasks: Creating task %s...\n", tasks[i].name);
-    xTaskCreatePinnedToCore(
+  for(int i = 0; i < taskCount; i++){
+    //Serial.printf("createRmsTasks: Creating task %s...\n", tasks[i].name);
+    xTaskCreatePinnedToCore
+    (
       tasks[i].function,
       tasks[i].name,
       tasks[i].stackSize,
@@ -66,13 +69,16 @@ void createRmsTasks()
     );
 
     // Suspend immediately so it doesn't start running before setup() completes
-    vTaskSuspend(tasks[i].handle);
+    //vTaskSuspend(tasks[i].handle);
+    
 	
 	#ifdef DEBUG
 		Serial.printf("createRmsTasks: Created %s with priority %u, period %ums (suspended)\n", 
                   tasks[i].name, tasks[i].priority, tasks[i].periodMs);
 	#endif
   }
+
+  //xTaskResumeAll();
 
   Serial.println("createRmsTasks: All tasks created. Ready to resume after mutex ceilings are set.");
 }
@@ -81,10 +87,9 @@ void createRmsTasks()
 void startRmsTasks() 
 {
   Serial.println("startRmsTasks: Resuming all tasks...");
-  for(int i = 0; i < taskCount; i++) {
-    vTaskResume(tasks[i].handle);
-    Serial.printf("startRmsTasks: Resumed %s\n", tasks[i].name);
-  }
+ 
+  xTaskResumeAll();
+
   Serial.println("startRmsTasks: All tasks are now running.");
 }
 

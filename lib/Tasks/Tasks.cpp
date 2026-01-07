@@ -175,7 +175,7 @@ void TaskRenderLCD1(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
     
-    Serial.println("TaskRenderLCD1: Task started");
+    //Serial.println("TaskRenderLCD1: Task started");
     
     for(;;) {
         // Copy game state
@@ -183,7 +183,7 @@ void TaskRenderLCD1(void* pvParameters) {
         GameState localState = gameState;
         pcp_mutex_unlock(&xGameStateMutex);
 
-        Serial.println("TaskRenderLCD1: Rendering frame");
+        //Serial.println("TaskRenderLCD1: Rendering frame");
         
         // Now render based on game mode
         switch (localState.mode) {

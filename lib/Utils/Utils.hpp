@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-#define DEBUG // Uncomment for debug messages
+//#define DEBUG // Uncomment for debug messages
 #define TIME_TASKS // Uncomment to get time information about tasks
 
 #define NUMBER_OF_TASKS 6
