@@ -13,6 +13,8 @@
 #define MAZE_COLS (LCD_WIDTH / MAZE_CELL_SIZE)
 #define MAZE_ROWS (LCD_HEIGHT / MAZE_CELL_SIZE)
 
+#define NUMBER_OF_MAZES 3
+
 extern Adafruit_PCD8544 lcd1;
 extern Adafruit_PCD8544 lcd2;
 
@@ -67,6 +69,10 @@ struct GameState {
 };
 
 extern GameState gameState;
+extern Maze allMazes[NUMBER_OF_MAZES];
+extern Maze maze1;
+extern Maze maze2;
+extern Maze maze3;
 
 void game_init();
 void game_generate_maze();
