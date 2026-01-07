@@ -100,17 +100,17 @@ void loop()
     Serial.print("-------------------------------------------------------------------\n");
     Serial.print("------------------------- TASK TIME INFO --------------------------\n");
     Serial.print("Task: Button task\n");
-    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttButtons.timeMin, ttButtons.timeSum/ttButtons.timeCount, ttButtons.timeMax);
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttButtons.timeMin, round(ttButtons.timeSum/ttButtons.timeCount), ttButtons.timeMax);
     Serial.print("Task: Accel1 task\n");
-    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel1.timeMin, ttAccel1.timeSum/ttAccel1.timeCount, ttAccel1.timeMax);
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel1.timeMin, round(ttAccel1.timeSum/ttAccel1.timeCount), ttAccel1.timeMax);
     Serial.print("Task: Accel2 task\n");
-    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel2.timeMin, ttAccel2.timeSum/ttAccel2.timeCount, ttAccel2.timeMax);
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel2.timeMin, round(ttAccel2.timeSum/ttAccel2.timeCount), ttAccel2.timeMax);
     Serial.print("Task: LCD task\n");
-    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttLCD.timeMin, ttLCD.timeSum/ttLCD.timeCount, ttLCD.timeMax);
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttLCD.timeMin, round(ttLCD.timeSum/ttLCD.timeCount), ttLCD.timeMax);
     Serial.print("Task: Game Physics task\n");
-    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttGamePhysics.timeMin, ttGamePhysics.timeSum/ttGamePhysics.timeCount, ttGamePhysics.timeMax);
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttGamePhysics.timeMin, round(ttGamePhysics.timeSum/ttGamePhysics.timeCount), ttGamePhysics.timeMax);
     Serial.print("Task: Game Logic task\n");
-    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttGameLogic.timeMin, ttGameLogic.timeSum/ttGameLogic.timeCount, ttGameLogic.timeMax);
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttGameLogic.timeMin, round(ttGameLogic.timeSum/ttGameLogic.timeCount), ttGameLogic.timeMax);
     Serial.print("-------------------------------------------------------------------\n");
     Serial.print("-------------------------------------------------------------------\n");
   #else
