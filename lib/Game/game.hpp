@@ -27,7 +27,7 @@ enum GameMode {
 
 enum MenuSelect {
     PLAY = 0,
-    CREDITS = 1,
+    CREDITS = 4,
     SELECT_MAX = 2
 };
 

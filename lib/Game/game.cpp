@@ -170,7 +170,7 @@ void game_update_menu(bool selectPressed, bool cyclePressed) {
                 break;
                 
             case CREDITS:
-                gameState.mode = CREDITS;
+                gameState.mode = (GameMode)CREDITS; // Weird ass type cast lol, but works
                 if (selectPressed) {
                     gameState.mode = MENU;
                 }
