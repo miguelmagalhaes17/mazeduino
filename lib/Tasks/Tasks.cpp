@@ -72,7 +72,13 @@ void TaskReadAccel1(void*)
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL1_PERIOD);
   for(;;){
 	  pcp_mutex_lock(&xAccel1Mutex);
-    readData(accel1, I2C_0);
+        readData(accel1, I2C_0);
+        // Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
+        //                     accel1.x,
+        //             accel1.y,
+        //             accel1.z,
+        //             accel1.roll,
+        //             accel1.pitch);
     pcp_mutex_unlock(&xAccel1Mutex);
     
 	  #ifdef DEBUG
@@ -92,19 +98,18 @@ void TaskReadAccel2(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL2_PERIOD);  
-    for(;;){
-	  pcp_mutex_lock(&xAccel2Mutex);
-    readData(accel2, I2C_1);
-    pcp_mutex_unlock(&xAccel2Mutex);
-    
-	  #ifdef DEBUG	
-	  	Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
-	  				  accel2.x,
-              accel2.y,
-              accel2.z,
-              accel2.roll,
-              accel2.pitch);
-	  #endif
+    for(;;)
+    {
+        pcp_mutex_lock(&xAccel2Mutex);
+        readData(accel2, I2C_1);
+        // Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
+        //                 accel2.x,
+        //         accel2.y,
+        //         accel2.z,
+        //         accel2.roll,
+        //         accel2.pitch);
+        pcp_mutex_unlock(&xAccel2Mutex);
+        
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
 }
@@ -121,6 +126,9 @@ void TaskUpdateGamePhysics(void*){
         pcp_mutex_lock(&xAccel1Mutex);
         float localAccel1X = accel1.x;
         float localAccel1Y = accel1.y;
+
+        Serial.printf("TaskUpdatePhysics: Accel1 X=%.2f Y=%.2f\n", localAccel1X, localAccel1Y);
+
         pcp_mutex_unlock(&xAccel1Mutex);
         
         pcp_mutex_lock(&xAccel2Mutex);
