@@ -127,7 +127,7 @@ void TaskUpdateGamePhysics(void*){
         float localAccel1X = accel1.x;
         float localAccel1Y = accel1.y;
 
-        Serial.printf("TaskUpdatePhysics: Accel1 X=%.2f Y=%.2f\n", localAccel1X, localAccel1Y);
+        //Serial.printf("TaskUpdatePhysics: Accel1 X=%.2f Y=%.2f\n", localAccel1X, localAccel1Y);
 
         pcp_mutex_unlock(&xAccel1Mutex);
         
@@ -263,12 +263,12 @@ void TaskRenderLCD1(void* pvParameters) {
                 lcd1.setTextSize(1);
                 lcd1.setTextColor(BLACK);
                 
-                lcd1.setCursor(10, 10);
-                lcd1.println("GAME OVER!");
+                lcd1.setCursor(10, 8);
+                lcd1.println("END!");
                 
-                lcd1.setCursor(10, 22);
+                lcd1.setCursor(10, 20);
                 lcd1.printf("Player %d", localState.winner);
-                lcd1.setCursor(10, 30);
+                lcd1.setCursor(10, 28);
                 lcd1.println("WINS!");
                 
                 lcd1.setCursor(5, 42);

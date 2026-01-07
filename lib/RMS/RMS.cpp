@@ -8,7 +8,7 @@ RmsTask tasks[NUMBER_OF_TASKS] =
   {TaskUpdateGamePhysics,  "UpdatePhysics",  4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, &xAccel1Mutex, &xAccel2Mutex, NULL}},
   {TaskGameLogic,      "GameLogic",      4096, GAME_PERIOD,  0, NULL, {&xGameStateMutex, &xButtonMutex, NULL}},
   {TaskRenderLCD1,     "RenderLCD1",     4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, NULL}},
-  //{TaskRenderLCD2,     "RenderLCD2",     4096, 33,  0, NULL, {&xGameStateMutex, NULL}},
+  {TaskRenderLCD2,     "RenderLCD2",     4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, NULL}},
   {TaskReadButtons , "ReadButtons" , 4096 , READBUTTON_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
   {TaskReadAccel1 , "ReadAccel1" , 4096 , ACCEL1_PERIOD , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
   {TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}}
@@ -20,7 +20,7 @@ int taskCount = NUMBER_OF_TASKS;
 // RMS Priority Assignment
 void assignRmsPriorities() 
 {
-  Serial.println("assignRmsPriorities: Assigning RMS priorities...");
+  //Serial.println("assignRmsPriorities: Assigning RMS priorities...");
   // Sort tasks by period (shorter period = higher priority)
   for(int i = 0; i < taskCount - 1; i++) {
     for(int j = i + 1; j < taskCount; j++) {
@@ -38,8 +38,8 @@ void assignRmsPriorities()
     tasks[i].priority = priority--;
     
 	
-    Serial.printf("assignRmsPriorities: Assigned %s priority %u, period %ums\n", 
-                tasks[i].name, tasks[i].priority, tasks[i].periodMs);
+    //Serial.printf("assignRmsPriorities: Assigned %s priority %u, period %ums\n", 
+    //            tasks[i].name, tasks[i].priority, tasks[i].periodMs);
 
   }
 }

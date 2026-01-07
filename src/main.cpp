@@ -48,13 +48,15 @@ void setup()
   // LCD init (must be before any display calls)
   lcd1.begin();
   lcd1.setContrast(60);
-  lcd1.clearDisplay();
   lcd1.display();
+  delay(2000);
+  lcd1.clearDisplay();
 
   lcd2.begin();
   lcd2.setContrast(60);
-  lcd2.clearDisplay();
   lcd2.display();
+  delay(2000);
+  lcd2.clearDisplay();
 
   // Game state init
   game_init();
@@ -87,7 +89,7 @@ void setup()
   
   // NOW start all tasks - they have proper mutex ceilings and all tasks exist
   //startRmsTasks();
-  //Serial.printf("main: Scheduler starting...\n");
+  //  ("main: Scheduler starting...\n");
 
 }
 
