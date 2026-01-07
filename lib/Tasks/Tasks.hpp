@@ -55,6 +55,8 @@ extern bool cycleButtonState;
 extern bool prevSelectButtonState;
 extern bool prevCycleButtonState;
 
+extern TaskTiming ttButtons, ttAccel1, ttAccel2, ttLCD, ttGamePhysics, ttGameLogic;
+
 // Task declaration                                         
 void TaskReadButtons(void*);
 void TaskReadAccel1(void*);
