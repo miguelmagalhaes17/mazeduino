@@ -29,15 +29,15 @@ void setup()
   // Check accelerometers
   /*
   if(!accel1.begin(LSM303_ADDRESS_ACCEL, &Wire)) {
-    Serial.println("main: Accelerometer 1 not found!\n");    
+    Serial.printf("main: Accelerometer 1 not found!\n");    
   } else {
-    Serial.println("main: Accelerometer 1 initialized\n");
+    Serial.printf("main: Accelerometer 1 initialized\n");
   }
   
   if(!accel2.begin(LSM303_ADDRESS_ACCEL, &Wire1)) {  // Use Wire1 for second accelerometer
-    Serial.println("main: Accelerometer 2 not found!\n");
+    Serial.printf("main: Accelerometer 2 not found!\n");
   } else {
-    Serial.println("main: Accelerometer 2 initialized\n");
+    Serial.printf("main: Accelerometer 2 initialized\n");
   }
   */
 
@@ -82,10 +82,10 @@ void setup()
   //vTaskStartScheduler();
 
 
-  //Serial.println("main: All tasks initialized and mutexes configured.\n");
+  //Serial.printf("main: All tasks initialized and mutexes configured.\n");
   //Serial.printf("main: Starting scheduler and resuming tasks...\n");
   //vTaskStartScheduler();
-  //Serial.println("=== NUNCA DEVE CHEGAR AQUI CRLLLLLLLLLL ==="); // não é suposto passar o scheduler depois dele ser iniciado
+  //Serial.printf("=== NUNCA DEVE CHEGAR AQUI CRLLLLLLLLLL ==="); // não é suposto passar o scheduler depois dele ser iniciado
   
   // NOW start all tasks - they have proper mutex ceilings and all tasks exist
   //startRmsTasks();
@@ -95,8 +95,28 @@ void setup()
 
 void loop()
 {
-  // Empty - all work is done in FreeRTOS tasks
-  // This task runs at lowest priority (1 by default)
-  Serial.println("main: Loop running - sleeping forever.");
-  vTaskDelay(portMAX_DELAY);  // Sleep forever
+  #ifdef TIME_TASKS
+    vTaskDelay(pdMS_TO_TICKS(TIME_TASKS_INFO_PRINT_TIME));
+    Serial.print("-------------------------------------------------------------------\n");
+    Serial.print("------------------------- TASK TIME INFO --------------------------\n");
+    Serial.print("Task: Button task\n");
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttButtons.timeMin, ttButtons.timeSum/ttButtons.timeCount, ttButtons.timeMax);
+    Serial.print("Task: Accel1 task\n");
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel1.timeMin, ttAccel1.timeSum/ttAccel1.timeCount, ttAccel1.timeMax);
+    Serial.print("Task: Accel2 task\n");
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel2.timeMin, ttAccel2.timeSum/ttAccel2.timeCount, ttAccel2.timeMax);
+    Serial.print("Task: LCD task\n");
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttLCD.timeMin, ttLCD.timeSum/ttLCD.timeCount, ttLCD.timeMax);
+    Serial.print("Task: Game Physics task\n");
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttGamePhysics.timeMin, ttGamePhysics.timeSum/ttGamePhysics.timeCount, ttGamePhysics.timeMax);
+    Serial.print("Task: Game Logic task\n");
+    Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttGameLogic.timeMin, ttGameLogic.timeSum/ttGameLogic.timeCount, ttGameLogic.timeMax);
+    Serial.print("-------------------------------------------------------------------\n");
+    Serial.print("-------------------------------------------------------------------\n");
+  #else
+    // Empty - all work is done in FreeRTOS tasks
+    // This task runs at lowest priority (1 by default)
+    Serial.printf("main: Loop running - sleeping forever.");
+    vTaskDelay(portMAX_DELAY);  // Sleep forever
+  #endif
 }

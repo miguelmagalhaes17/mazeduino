@@ -28,9 +28,10 @@ bool cycleButtonState = 0;
 bool prevSelectButtonState = 0;
 bool prevCycleButtonState = 0;
 
+TaskTiming ttButtons, ttAccel1, ttAccel2, ttLCD, ttGamePhysics, ttGameLogic;
+
 //AccelerometerData accel1;
 //AccelerometerData accel2;
-
 
 void TaskReadButtons(void*)
 {
@@ -39,6 +40,8 @@ void TaskReadButtons(void*)
   
   for(;;)
   {
+    ttButtons.timeStart = micros();
+
     readSelectButtonState = !digitalRead(SELBUTTON_PIN);
     readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
     if(readSelectButtonState != prevSelectButtonState){
@@ -61,6 +64,10 @@ void TaskReadButtons(void*)
                   "Cycle Button: %d\n"
                   , selectButtonState , cycleButtonState);
     #endif
+
+    ttButtons.timeEnd = micros();
+    time_calculations(&ttButtons);
+
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
 }
@@ -70,9 +77,12 @@ void TaskReadAccel1(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL1_PERIOD);
-  for(;;){
-	  pcp_mutex_lock(&xAccel1Mutex);
-        readData(accel1, I2C_0);
+  for(;;)
+  {
+    ttAccel1.timeStart = micros();
+
+    pcp_mutex_lock(&xAccel1Mutex);
+    readData(accel1, I2C_0);
         // Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
         //                     accel1.x,
         //             accel1.y,
@@ -89,6 +99,10 @@ void TaskReadAccel1(void*)
               accel1.roll,
               accel1.pitch);	
 	  #endif
+
+      ttAccel1.timeEnd = micros();
+      time_calculations(&ttAccel1);
+
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
 }
@@ -100,6 +114,8 @@ void TaskReadAccel2(void*)
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL2_PERIOD);  
     for(;;)
     {
+        ttAccel2.timeStart = micros();
+
         pcp_mutex_lock(&xAccel2Mutex);
         readData(accel2, I2C_1);
         // Serial.printf("TaskReadAccel2: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
@@ -110,6 +126,9 @@ void TaskReadAccel2(void*)
         //         accel2.pitch);
         pcp_mutex_unlock(&xAccel2Mutex);
         
+        ttAccel2.timeEnd = micros();
+        time_calculations(&ttAccel2);
+
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
 }
@@ -122,6 +141,8 @@ void TaskUpdateGamePhysics(void*){
     Serial.println("TaskUpdatePhysics: Task started");
     
     for(;;) {
+        ttGamePhysics.timeStart = micros();
+
         // Copy accel data
         pcp_mutex_lock(&xAccel1Mutex);
         float localAccel1X = accel1.x;
@@ -146,6 +167,9 @@ void TaskUpdateGamePhysics(void*){
         game_update_physics(deltaTime);  // <-- Calls game.cpp function
         pcp_mutex_unlock(&xGameStateMutex);
 
+        ttGamePhysics.timeEnd = micros();
+        time_calculations(&ttGamePhysics);
+
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
@@ -158,7 +182,10 @@ void TaskGameLogic(void* pvParameters) {
 
     //game_init();
     
-    for(;;) {
+    for(;;) 
+    {
+        ttGameLogic.timeStart = micros();
+
         // Copy button states
         pcp_mutex_lock(&xButtonMutex);
         bool localSelectPressed = selectButtonState;
@@ -174,6 +201,9 @@ void TaskGameLogic(void* pvParameters) {
         game_update_logic(localSelectPressed, localCyclePressed);
         pcp_mutex_unlock(&xGameStateMutex);
         
+        ttGameLogic.timeEnd = micros();
+        time_calculations(&ttGameLogic);
+
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
@@ -185,7 +215,10 @@ void TaskRenderLCD1(void* pvParameters) {
     
     //Serial.println("TaskRenderLCD1: Task started");
     
-    for(;;) {
+    for(;;)
+    {
+        ttLCD.timeStart = micros();
+
         // Copy game state
         pcp_mutex_lock(&xGameStateMutex);
         GameState localState = gameState;
@@ -278,6 +311,9 @@ void TaskRenderLCD1(void* pvParameters) {
                 break;
         }
         
+        ttLCD.timeEnd = micros();
+        time_calculations(&ttLCD);
+
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }

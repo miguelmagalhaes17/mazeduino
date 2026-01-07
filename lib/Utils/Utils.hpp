@@ -3,6 +3,7 @@
 
 //#define DEBUG // Uncomment for debug messages
 #define TIME_TASKS // Uncomment to get time information about tasks
+#define TIME_TASKS_INFO_PRINT_TIME 30000 // in ms
 
 #define NUMBER_OF_TASKS 7
 
@@ -18,10 +19,11 @@
 typedef struct TaskTiming {
   uint64_t timeSum = 0;
   uint64_t timeCount = 0;
+  uint64_t timeStart = 0;
+  uint64_t timeEnd = 0;
   int timeMax = 0;
   int timeMin = 999999;
-  int timeStart = 0;
-  int timeEnd = 0;
+
 } TaskTiming;
 
 void time_calculations(TaskTiming* tt);
