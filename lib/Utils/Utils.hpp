@@ -5,13 +5,13 @@
 #define TIME_TASKS // Uncomment to get time information about tasks
 #define TIME_TASKS_INFO_PRINT_TIME 30000 // in ms
 
-#define NUMBER_OF_TASKS 6
+#define NUMBER_OF_TASKS 7
 
 // Task periods
 #define READBUTTON_PERIOD 20
 #define ACCEL1_PERIOD 33
 #define ACCEL2_PERIOD 33
-#define LCD_PERIOD 50
+#define LCD_PERIOD 33
 #define GAME_PERIOD 100
 
 // Task Timing Structure

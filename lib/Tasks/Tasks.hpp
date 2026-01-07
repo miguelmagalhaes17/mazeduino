@@ -27,6 +27,7 @@
 #define LCD1_DC_PIN 9   // cabo azul
 #define LCD1_CS_PIN 8   // cabo castanho
 #define LCD1_RST_PIN 7  // cabo laranja
+
 #define LCD2_CLK_PIN 6  // cabo branco
 #define LCD2_DIN_PIN 5  // cabo verde
 #define LCD2_DC_PIN 4   // cabo azul

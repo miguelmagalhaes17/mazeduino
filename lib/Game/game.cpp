@@ -3,20 +3,32 @@
 
 GameState gameState;
 
-// Predefined maze layout (0 = path, 1 = wall)
-const uint8_t PREDEFINED_MAZE[MAZE_ROWS][MAZE_COLS] = {
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
-    {1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1},
-    {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
-    {1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1},
-    {1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1},
-    {1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1,1},
-    {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
-    {1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1},
-    {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
-    {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+const uint8_t PREDEFINED_MAZE[MAZE_ROWS][MAZE_COLS] =
+{
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,1,1,1,1,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1},
+{1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1},
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,1,1,1,1,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,1},
+{1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+{1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+{1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
 Maze maze1 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -110,9 +122,8 @@ void game_generate_maze() {
     gameState.maze.startX = MAZE_CELL_SIZE + BALL_RADIUS;  // Inside first cell
     gameState.maze.startY = MAZE_CELL_SIZE + BALL_RADIUS;
     
-    // Finish zone: bottom-right AREA +-
-    gameState.maze.finishX = LCD_WIDTH - (MAZE_CELL_SIZE * 2);
-    gameState.maze.finishY = LCD_HEIGHT - (MAZE_CELL_SIZE * 2);
+    gameState.maze.finishX = LCD_WIDTH - (MAZE_CELL_SIZE * 3);
+    gameState.maze.finishY = LCD_HEIGHT - (MAZE_CELL_SIZE * 3);
     gameState.maze.finishWidth = MAZE_CELL_SIZE;
     gameState.maze.finishHeight = MAZE_CELL_SIZE;
     
@@ -155,7 +166,10 @@ void game_update_menu(bool selectPressed, bool cyclePressed) {
                 break;
                 
             case CREDITS:
-                Serial.println("game_update_menu: Credits selected");
+                gameState.mode = CREDITS;
+                if (selectPressed) {
+                    gameState.mode = MENU;
+                }
                 // wtv
                 break;
         }
@@ -172,7 +186,7 @@ void game_update_physics(float deltaTime) {
     
     // Physics constants
     const float ACCEL_SCALE = 30.0f;      // Scale accelerometer input
-    const float MAX_VELOCITY = 40.0f;     // Max pixels per second
+    const float MAX_VELOCITY = 50.0f;     // Max pixels per second
     const float FRICTION = 0.92f;         // Velocity decay per frame
     
     // ======== UPDATE PLAYER 1 ========
@@ -195,7 +209,7 @@ void game_update_physics(float deltaTime) {
         
         // Calculate new position
         float newX1 = gameState.player1.x + gameState.player1.velX * deltaTime;
-        float newY1 = gameState.player1.y + gameState.player1.velY * deltaTime;
+        float newY1 = gameState.player1.y - gameState.player1.velY * deltaTime;
         
         // Check wall collision before moving
         if (!check_wall_collision(newX1, gameState.player1.y, BALL_RADIUS)) {
@@ -239,7 +253,7 @@ void game_update_physics(float deltaTime) {
         
         // Calculate new position
         float newX2 = gameState.player2.x + gameState.player2.velX * deltaTime;
-        float newY2 = gameState.player2.y + gameState.player2.velY * deltaTime;
+        float newY2 = gameState.player2.y - gameState.player2.velY * deltaTime;
         
         // Check wall collision before moving
         if (!check_wall_collision(newX2, gameState.player2.y, BALL_RADIUS)) {
