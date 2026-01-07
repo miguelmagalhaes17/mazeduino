@@ -122,7 +122,10 @@ void game_update_menu(bool selectPressed, bool cyclePressed) {
                 break;
                 
             case CREDITS:
-                Serial.println("game_update_menu: Credits selected");
+                gameState.mode = CREDITS;
+                if (selectPressed) {
+                    gameState.mode = MENU;
+                }
                 // wtv
                 break;
         }

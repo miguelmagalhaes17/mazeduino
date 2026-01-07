@@ -309,6 +309,23 @@ void TaskRenderLCD1(void* pvParameters) {
                 
                 lcd1.display();
                 break;
+
+            case CREDITS:
+                // Render credits screen
+                lcd1.clearDisplay();
+                lcd1.setTextSize(1);
+                lcd1.setTextColor(BLACK);
+                
+                lcd1.setCursor(5, 10);
+                lcd1.println("MADE BY:");
+                lcd1.setCursor(5, 20);
+                lcd1.println("ANDRÉ OSÓRIO");
+                lcd1.setCursor(5, 30);
+                lcd1.println("MIGUEL MAGALHÃES");
+                lcd1.setCursor(5, 40);
+                lcd1.println("RODRIGO OLIVEIRA");
+                lcd1.display();
+                break;
         }
         
         ttLCD.timeEnd = micros();
