@@ -43,9 +43,10 @@ Maze maze1 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
                {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}},
-                0 , 0,
-                0 , 0,
-                0 , 0};
+                MAZE_CELL_SIZE + BALL_RADIUS , MAZE_CELL_SIZE + BALL_RADIUS,
+                LCD_WIDTH - (MAZE_CELL_SIZE * 3) , LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
+                MAZE_CELL_SIZE , MAZE_CELL_SIZE};
+
 Maze maze2 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
                {1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1},
@@ -58,9 +59,10 @@ Maze maze2 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
                {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}},
-                0 , 0,
-                0 , 0,
-                0 , 0};
+                MAZE_CELL_SIZE + BALL_RADIUS , MAZE_CELL_SIZE + BALL_RADIUS,
+                LCD_WIDTH - (MAZE_CELL_SIZE * 3) , LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
+                MAZE_CELL_SIZE , MAZE_CELL_SIZE};
+                
 Maze maze3 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
                {1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1},
@@ -73,9 +75,9 @@ Maze maze3 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
                {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}},
-                0 , 0,
-                0 , 0,
-                0 , 0};
+                MAZE_CELL_SIZE + BALL_RADIUS , MAZE_CELL_SIZE + BALL_RADIUS,
+                LCD_WIDTH - (MAZE_CELL_SIZE * 3) , LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
+                MAZE_CELL_SIZE , MAZE_CELL_SIZE};
 
 Maze allMazes[NUMBER_OF_MAZES] = {maze1, maze2, maze3};
 
@@ -111,6 +113,7 @@ void game_generate_maze() {
     
     gameState.maze = allMazes[random(NUMBER_OF_MAZES)];
 
+    /* OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD
     // Copy predefined maze
     for (int row = 0; row < MAZE_ROWS; row++) {
         for (int col = 0; col < MAZE_COLS; col++) {
@@ -126,6 +129,7 @@ void game_generate_maze() {
     gameState.maze.finishY = LCD_HEIGHT - (MAZE_CELL_SIZE * 3);
     gameState.maze.finishWidth = MAZE_CELL_SIZE;
     gameState.maze.finishHeight = MAZE_CELL_SIZE;
+    */
     
     Serial.printf("game_generate_maze: Start=(%d,%d) Finish=(%d,%d)\n",
                   gameState.maze.startX, gameState.maze.startY,
