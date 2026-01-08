@@ -3,7 +3,8 @@
 
 GameState gameState;
 
-Maze maze1 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+Maze maze1 = {
+    {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
                {1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1},
                {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
@@ -15,11 +16,15 @@ Maze maze1 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
                {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}},
-                MAZE_CELL_SIZE + BALL_RADIUS , MAZE_CELL_SIZE + BALL_RADIUS,
-                LCD_WIDTH - (MAZE_CELL_SIZE * 3) , LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
-                MAZE_CELL_SIZE , MAZE_CELL_SIZE};
+                MAZE_CELL_SIZE + BALL_RADIUS,
+                MAZE_CELL_SIZE + BALL_RADIUS,
+                LCD_WIDTH - (MAZE_CELL_SIZE * 3),
+                LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
+                MAZE_CELL_SIZE , MAZE_CELL_SIZE
+            };
 
-Maze maze2 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+Maze maze2 = {
+    {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
                {1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1},
                {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
@@ -31,11 +36,15 @@ Maze maze2 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
                {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}},
-                MAZE_CELL_SIZE + BALL_RADIUS , MAZE_CELL_SIZE + BALL_RADIUS,
-                LCD_WIDTH - (MAZE_CELL_SIZE * 3) , LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
-                MAZE_CELL_SIZE , MAZE_CELL_SIZE};
+                MAZE_CELL_SIZE + BALL_RADIUS,
+                MAZE_CELL_SIZE + BALL_RADIUS,
+                LCD_WIDTH - (MAZE_CELL_SIZE * 3),
+                LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
+                MAZE_CELL_SIZE , MAZE_CELL_SIZE
+            };
                 
-Maze maze3 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+Maze maze3 = {
+    {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
                {1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1},
                {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
@@ -47,9 +56,12 @@ Maze maze3 = {{{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
                {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}},
-                MAZE_CELL_SIZE + BALL_RADIUS , MAZE_CELL_SIZE + BALL_RADIUS,
-                LCD_WIDTH - (MAZE_CELL_SIZE * 3) , LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
-                MAZE_CELL_SIZE , MAZE_CELL_SIZE};
+                MAZE_CELL_SIZE + BALL_RADIUS, 
+                MAZE_CELL_SIZE + BALL_RADIUS,
+                LCD_WIDTH - (MAZE_CELL_SIZE * 3),
+                LCD_HEIGHT - (MAZE_CELL_SIZE * 3),
+                MAZE_CELL_SIZE , MAZE_CELL_SIZE
+            };
 
 Maze allMazes[NUMBER_OF_MAZES] = {maze1, maze2, maze3};
 
