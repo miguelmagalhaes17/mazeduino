@@ -310,20 +310,22 @@ void TaskRenderLCD1(void* pvParameters) {
                 lcd1.display();
                 break;
 
-            case CREDITS:
+            case SHOW_CREDITS:
                 // Render credits screen
                 lcd1.clearDisplay();
-                lcd1.setTextSize(1);
+                lcd1.setTextSize(0.5);
                 lcd1.setTextColor(BLACK);
                 
-                lcd1.setCursor(5, 10);
-                lcd1.println("MADE BY:");
-                lcd1.setCursor(5, 20);
-                lcd1.println("ANDRÉ OSÓRIO");
-                lcd1.setCursor(5, 30);
-                lcd1.println("MIGUEL MAGALHÃES");
-                lcd1.setCursor(5, 40);
-                lcd1.println("RODRIGO OLIVEIRA");
+                lcd1.setCursor(5, 0);
+                lcd1.println("MAZEDUINO by:");
+                lcd1.setCursor(5, 9);
+                lcd1.println("ANDRE O.");
+                lcd1.setCursor(5, 18);
+                lcd1.println("MIGUEL M.");
+                lcd1.setCursor(5, 27);
+                lcd1.println("RODRIGO O.");
+                lcd1.setCursor(5, 36);
+                lcd1.println("FEUP 2025");                
                 lcd1.display();
                 break;
         }
@@ -420,12 +422,12 @@ void TaskRenderLCD2(void* pvParameters) {
                 lcd2.setCursor(10, 10);
                 lcd2.println("GAME OVER!");
                 
-                lcd2.setCursor(10, 22);
+                lcd2.setCursor(10, 19);
                 lcd2.printf("Player %d", localState.winner);
-                lcd2.setCursor(10, 30);
+                lcd2.setCursor(10, 28);
                 lcd2.println("WINS!");
                 
-                lcd2.setCursor(5, 42);
+                lcd2.setCursor(5, 40);
                 lcd2.println("Press SELECT");
                 
                 lcd2.display();

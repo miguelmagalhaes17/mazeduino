@@ -13,7 +13,7 @@
 #define MAZE_COLS (LCD_WIDTH / MAZE_CELL_SIZE)
 #define MAZE_ROWS (LCD_HEIGHT / MAZE_CELL_SIZE)
 
-#define NUMBER_OF_MAZES 3
+#define NUMBER_OF_MAZES 4
 
 extern Adafruit_PCD8544 lcd1;
 extern Adafruit_PCD8544 lcd2;
@@ -22,12 +22,13 @@ enum GameMode {
     MENU = 0, 
     PLAYING = 1, 
     PAUSED = 2, 
-    GAMEOVER = 3
+    GAMEOVER = 3,
+    SHOW_CREDITS = 4
 };
 
 enum MenuSelect {
     PLAY = 0,
-    CREDITS = 4,
+    CREDITS = 1,
     SELECT_MAX = 2
 };
 
