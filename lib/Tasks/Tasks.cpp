@@ -138,7 +138,6 @@ void TaskUpdateGamePhysics(void*){
     const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
     const float deltaTime = 0.033f;
     
-    Serial.println("TaskUpdatePhysics: Task started");
     
     for(;;) {
         ttGamePhysics.timeStart = micros();
@@ -178,7 +177,6 @@ void TaskGameLogic(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xPeriod = pdMS_TO_TICKS(GAME_PERIOD);
     
-    Serial.println("TaskGameLogic: Task started");
 
     //game_init();
     
@@ -432,7 +430,26 @@ void TaskRenderLCD2(void* pvParameters) {
                 
                 lcd2.display();
                 break;
+            case SHOW_CREDITS:
+                // Render credits screen
+                lcd2.clearDisplay();
+                lcd2.setTextSize(0.5);
+                lcd2.setTextColor(BLACK);
+                
+                lcd2.setCursor(5, 0);
+                lcd2.println("MAZEDUINO by:");
+                lcd2.setCursor(5, 9);
+                lcd2.println("ANDRE O.");
+                lcd2.setCursor(5, 18);
+                lcd2.println("MIGUEL M.");
+                lcd2.setCursor(5, 27);
+                lcd2.println("RODRIGO O.");
+                lcd2.setCursor(5, 36);
+                lcd2.println("FEUP 2025");                
+                lcd2.display();
+                break;
         }
+        
         
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }

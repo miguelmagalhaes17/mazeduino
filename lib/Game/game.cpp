@@ -169,7 +169,7 @@ void game_update_menu(bool selectPressed, bool cyclePressed) {
                 gameState.player2.velY = 0.0f;
                 gameState.player2.hasFinished = false;
                 
-                Serial.println("game_update_menu: Starting game!");
+                //Serial.println("game_update_menu: Starting game!");
                 break;
                 
             case CREDITS:
@@ -233,7 +233,6 @@ void game_update_physics(float deltaTime) {
             gameState.player1.hasFinished = true;
             gameState.player1.finishTime = millis() - gameState.gameStartTime;
             gameState.winner = 1;
-            Serial.printf("PLAYER 1 WINS! Time: %lu ms\n", gameState.player1.finishTime);
         }
     }
     
@@ -278,7 +277,6 @@ void game_update_physics(float deltaTime) {
             gameState.player2.hasFinished = true;
             gameState.player2.finishTime = millis() - gameState.gameStartTime;
             gameState.winner = 2;
-            Serial.printf("PLAYER 2 WINS! Time: %lu ms\n", gameState.player2.finishTime);
         }
     }
 }
@@ -295,7 +293,6 @@ void game_update_logic(bool selectPressed, bool cyclePressed) {
         case PLAYING:
             if (selectPressed) {
                 gameState.mode = PAUSED;
-                Serial.println("game_update_logic: Game paused");
             }
             
             // Check if someone won
@@ -307,25 +304,21 @@ void game_update_logic(bool selectPressed, bool cyclePressed) {
         case PAUSED:
             if (selectPressed) {
                 gameState.mode = PLAYING;
-                Serial.println("game_update_logic: Game resumed");
             }
             if (cyclePressed) {
                 gameState.mode = MENU;
-                Serial.println("game_update_logic: Returning to menu");
             }
             break;
             
         case GAMEOVER:
             if (selectPressed) {
                 gameState.mode = MENU;
-                Serial.println("game_update_logic: Returning to menu from game over");
             }
             break;
 
         case SHOW_CREDITS:
             if (selectPressed) {
                 gameState.mode = MENU;
-                Serial.println("game_update_logic: Returning to menu from credits");
             }
             break;
     }
