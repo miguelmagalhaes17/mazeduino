@@ -20,6 +20,7 @@ Adafruit_PCD8544 lcd2 = Adafruit_PCD8544(LCD2_CLK_PIN,
 										 LCD2_CS_PIN,
 										 LCD2_RST_PIN);
 
+
 // Button related variables
 bool readSelectButtonState = 0;
 bool readCycleButtonState = 0;
@@ -35,11 +36,19 @@ TaskTiming ttButtons, ttAccel1, ttAccel2, ttLCD, ttGamePhysics, ttGameLogic;
 
 void TaskReadButtons(void*)
 {
-  TickType_t xLastWakeTime = xTaskGetTickCount();
-  const TickType_t xPeriod = pdMS_TO_TICKS(READBUTTON_PERIOD);
-  
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xPeriod = pdMS_TO_TICKS(READBUTTON_PERIOD);
+    int countButtons = 0;
+    int timeButtonsStart = 0;
+    int timeButtonsEnd = 0;
+    float avgTimeButtons = 0;
+
   for(;;)
   {
+    timeButtonsStart = micros();
+    countButtons = countButtons + 1;
+
+    //digitalWrite(1, HIGH);
     ttButtons.timeStart = micros();
 
     readSelectButtonState = !digitalRead(SELBUTTON_PIN);
@@ -68,8 +77,10 @@ void TaskReadButtons(void*)
     ttButtons.timeEnd = micros();
     time_calculations(&ttButtons);
 
+    //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
+  
 }
 
 // Read accelerometer 1
@@ -79,6 +90,7 @@ void TaskReadAccel1(void*)
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL1_PERIOD);
   for(;;)
   {
+    //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
     ttAccel1.timeStart = micros();
 
     pcp_mutex_lock(&xAccel1Mutex);
@@ -91,18 +103,19 @@ void TaskReadAccel1(void*)
         //             accel1.pitch);
     pcp_mutex_unlock(&xAccel1Mutex);
     
-	  #ifdef DEBUG
-	  	Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
-	  				  accel1.x,
-              accel1.y,
-              accel1.z,
-              accel1.roll,
-              accel1.pitch);	
-	  #endif
+	#ifdef DEBUG
+    Serial.printf("TaskReadAccel1: X=%.2f Y=%.2f Z=%.2f R=%.2f P=%.2f \n", 
+	  				accel1.x,
+                    accel1.y,
+                    accel1.z,
+                    accel1.roll,
+                    accel1.pitch);	
+	#endif
 
-      ttAccel1.timeEnd = micros();
-      time_calculations(&ttAccel1);
-
+    ttAccel1.timeEnd = micros();
+    time_calculations(&ttAccel1);
+      
+    //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
 }
@@ -114,6 +127,7 @@ void TaskReadAccel2(void*)
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL2_PERIOD);  
     for(;;)
     {
+        //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
         ttAccel2.timeStart = micros();
 
         pcp_mutex_lock(&xAccel2Mutex);
@@ -129,6 +143,7 @@ void TaskReadAccel2(void*)
         ttAccel2.timeEnd = micros();
         time_calculations(&ttAccel2);
 
+        //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
   }
 }
@@ -140,6 +155,7 @@ void TaskUpdateGamePhysics(void*){
     
     
     for(;;) {
+        //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
         ttGamePhysics.timeStart = micros();
 
         // Copy accel data
@@ -169,6 +185,7 @@ void TaskUpdateGamePhysics(void*){
         ttGamePhysics.timeEnd = micros();
         time_calculations(&ttGamePhysics);
 
+        //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
@@ -182,6 +199,8 @@ void TaskGameLogic(void* pvParameters) {
     
     for(;;) 
     {
+        //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
+
         ttGameLogic.timeStart = micros();
 
         // Copy button states
@@ -202,6 +221,7 @@ void TaskGameLogic(void* pvParameters) {
         ttGameLogic.timeEnd = micros();
         time_calculations(&ttGameLogic);
 
+        //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
@@ -215,6 +235,8 @@ void TaskRenderLCD1(void* pvParameters) {
     
     for(;;)
     {
+        digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
+
         ttLCD.timeStart = micros();
 
         // Copy game state
@@ -330,9 +352,10 @@ void TaskRenderLCD1(void* pvParameters) {
         
         ttLCD.timeEnd = micros();
         time_calculations(&ttLCD);
-
+        digitalWrite(1, LOW); // Debug pin to measure LCD task timing
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
+
 }
 
 void TaskRenderLCD2(void* pvParameters) {

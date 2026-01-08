@@ -190,7 +190,7 @@ void game_update_physics(float deltaTime) {
     
     // Physics constants
     const float ACCEL_SCALE = 30.0f;      // Scale accelerometer input
-    const float MAX_VELOCITY = 50.0f;     // Max pixels per second
+    const float MAX_VELOCITY = 40.0f;     // Max pixels per second
     const float FRICTION = 0.92f;         // Velocity decay per frame
     
     // ======== UPDATE PLAYER 1 ========

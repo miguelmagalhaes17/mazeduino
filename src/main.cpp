@@ -15,15 +15,20 @@ void setup()
 {
   Serial.begin(9600);
   delay(1000);  // Give serial time to initialize
-  
+  pinMode(1, OUTPUT);
+  digitalWrite(1, LOW); // Debug pin to measure setup timing
+  delay(1000);
   // I2C Accelerometer init (IF NOT USING ONE OF THE ACCELS COMMENT THE CORRESPODING Wire)
   //Wire.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
   //Wire1.begin(ACCEL2_SDA_PIN, ACCEL2_SCL_PIN);
 
   // Start both I2C buses
   I2C_0.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
+  delay(1000);
   I2C_1.begin(ACCEL2_SDA_PIN, ACCEL2_SCL_PIN);
+  delay(1000);
   initAccel(I2C_0);
+  delay(1000);
   initAccel(I2C_1);
 
   // Check accelerometers
