@@ -15,8 +15,8 @@ void setup()
 {
   Serial.begin(9600);
   delay(1000);  // Give serial time to initialize
-  pinMode(1, OUTPUT);
-  digitalWrite(1, LOW); // Debug pin to measure setup timing
+  //pinMode(1, OUTPUT);
+  //digitalWrite(1, LOW); // Debug pin to measure setup timing
   delay(1000);
   // I2C Accelerometer init (IF NOT USING ONE OF THE ACCELS COMMENT THE CORRESPODING Wire)
   //Wire.begin(ACCEL1_SDA_PIN, ACCEL1_SCL_PIN);
@@ -67,21 +67,21 @@ void setup()
   game_init();
 
   // Task init
-  pcp_mutex_init(&xButtonMutex);
+  //pcp_mutex_init(&xButtonMutex);
   pcp_mutex_init(&xAccel1Mutex);
   pcp_mutex_init(&xAccel2Mutex);
   pcp_mutex_init(&xGameStateMutex);
-  pcp_mutex_init(&xDisplayStateMutex);
+  //pcp_mutex_init(&xDisplayStateMutex);
 
   // Create tasks in SUSPENDED state
   createRmsTasks();
   
   // Configure mutex ceilings BEFORE starting tasks
-  pcp_mutex_set_ceiling(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
+  //pcp_mutex_set_ceiling(&xButtonMutex , pcp_mutex_init_find_ceiling(xButtonMutex.mutexHandle));
   pcp_mutex_set_ceiling(&xAccel1Mutex , pcp_mutex_init_find_ceiling(xAccel1Mutex.mutexHandle));
   pcp_mutex_set_ceiling(&xAccel2Mutex , pcp_mutex_init_find_ceiling(xAccel2Mutex.mutexHandle));
   pcp_mutex_set_ceiling(&xGameStateMutex , pcp_mutex_init_find_ceiling(xGameStateMutex.mutexHandle));
-  pcp_mutex_set_ceiling(&xDisplayStateMutex , pcp_mutex_init_find_ceiling(xDisplayStateMutex.mutexHandle));
+  //pcp_mutex_set_ceiling(&xDisplayStateMutex , pcp_mutex_init_find_ceiling(xDisplayStateMutex.mutexHandle));
   
 
   //vTaskStartScheduler();
@@ -106,7 +106,7 @@ void loop()
     Serial.print("------------------------- TASK TIME INFO --------------------------\n");
     Serial.print("Task: Button task\n");
     Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttButtons.timeMin, round(ttButtons.timeSum/ttButtons.timeCount), ttButtons.timeMax);
-    Serial.print("Task: Accel1 task\n");
+    /*Serial.print("Task: Accel1 task\n");
     Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel1.timeMin, round(ttAccel1.timeSum/ttAccel1.timeCount), ttAccel1.timeMax);
     Serial.print("Task: Accel2 task\n");
     Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttAccel2.timeMin, round(ttAccel2.timeSum/ttAccel2.timeCount), ttAccel2.timeMax);
@@ -117,7 +117,7 @@ void loop()
     Serial.print("Task: Game Logic task\n");
     Serial.printf("Min: %d | Avg: %d | Max: %d |\n", ttGameLogic.timeMin, round(ttGameLogic.timeSum/ttGameLogic.timeCount), ttGameLogic.timeMax);
     Serial.print("-------------------------------------------------------------------\n");
-    Serial.print("-------------------------------------------------------------------\n");
+    Serial.print("-------------------------------------------------------------------\n");*/
   #else
     // Empty - all work is done in FreeRTOS tasks
     // This task runs at lowest priority (1 by default)

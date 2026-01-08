@@ -6,12 +6,12 @@
 RmsTask tasks[NUMBER_OF_TASKS] = 
 {
   {TaskUpdateGamePhysics,  "UpdatePhysics",  4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, &xAccel1Mutex, &xAccel2Mutex, NULL}},
-  {TaskGameLogic,      "GameLogic",      4096, GAME_PERIOD,  0, NULL, {&xGameStateMutex, &xButtonMutex, NULL}},
-  {TaskRenderLCD1,     "RenderLCD1",     4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, NULL}},
-  {TaskRenderLCD2,     "RenderLCD2",     4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, NULL}},
-  {TaskReadButtons , "ReadButtons" , 4096 , READBUTTON_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
-  {TaskReadAccel1 , "ReadAccel1" , 4096 , ACCEL1_PERIOD , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
-  {TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}}
+  //{TaskGameLogic,      "GameLogic",      4096, GAME_PERIOD,  0, NULL, {&xGameStateMutex, &xButtonMutex, NULL}},
+  //{TaskRenderLCD1,     "RenderLCD1",     4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, NULL}},
+  //{TaskRenderLCD2,     "RenderLCD2",     4096, LCD_PERIOD,  0, NULL, {&xGameStateMutex, NULL}},
+  //{TaskReadButtons , "ReadButtons" , 4096 , READBUTTON_PERIOD , 0 , NULL /*, NULL*/ , {&xButtonMutex , NULL}},
+  //{TaskReadAccel1 , "ReadAccel1" , 4096 , ACCEL1_PERIOD , 0 , NULL /*, NULL*/ , {&xAccel1Mutex , NULL}},
+  //{TaskReadAccel2 , "ReadAccel2" , 4096 , ACCEL2_PERIOD, 0 , NULL /*, NULL*/ , {&xAccel2Mutex , NULL}}
 };
 
 // Task related varibles

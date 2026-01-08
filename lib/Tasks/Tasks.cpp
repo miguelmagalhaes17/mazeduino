@@ -41,7 +41,10 @@ void TaskReadButtons(void*)
     int countButtons = 0;
     int timeButtonsStart = 0;
     int timeButtonsEnd = 0;
-    float avgTimeButtons = 0;
+    float timeButtonsSum = 0;
+    int timeButtonMax = 0;
+    int timeButtonMin = 99999;
+    int timeDiff = 0;
 
   for(;;)
   {
@@ -49,7 +52,7 @@ void TaskReadButtons(void*)
     countButtons = countButtons + 1;
 
     //digitalWrite(1, HIGH);
-    ttButtons.timeStart = micros();
+    //ttButtons.timeStart = micros();
 
     readSelectButtonState = !digitalRead(SELBUTTON_PIN);
     readCycleButtonState = !digitalRead(CYCLEBUTTON_PIN);
@@ -74,8 +77,14 @@ void TaskReadButtons(void*)
                   , selectButtonState , cycleButtonState);
     #endif
 
-    ttButtons.timeEnd = micros();
-    time_calculations(&ttButtons);
+    //ttButtons.timeEnd = micros();
+    //time_calculations(&ttButtons);
+    timeButtonsEnd = micros();
+    timeDiff = timeButtonsEnd - timeButtonsStart;
+    timeButtonsSum += timeDiff;
+    if(timeDiff > timeButtonMax) timeButtonMax = timeDiff;
+    if(timeDiff < timeButtonMin) timeButtonMin = timeDiff;
+    Serial.printf("Iter: %d | Max: %d | Min: %d | Avg: %f\n",countButtons,timeButtonMax,timeButtonMin,(float)(timeButtonsSum/countButtons));
 
     //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
@@ -88,10 +97,20 @@ void TaskReadAccel1(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL1_PERIOD);
+    int countButtons = 0;
+    int timeButtonsStart = 0;
+    int timeButtonsEnd = 0;
+    float timeButtonsSum = 0;
+    int timeButtonMax = 0;
+    int timeButtonMin = 99999;
+    int timeDiff = 0;  
+
   for(;;)
   {
+        timeButtonsStart = micros();
+    countButtons = countButtons + 1;
     //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
-    ttAccel1.timeStart = micros();
+    //ttAccel1.timeStart = micros();
 
     pcp_mutex_lock(&xAccel1Mutex);
     readData(accel1, I2C_0);
@@ -112,8 +131,14 @@ void TaskReadAccel1(void*)
                     accel1.pitch);	
 	#endif
 
-    ttAccel1.timeEnd = micros();
-    time_calculations(&ttAccel1);
+    //ttAccel1.timeEnd = micros();
+    //time_calculations(&ttAccel1);
+    timeButtonsEnd = micros();
+    timeDiff = timeButtonsEnd - timeButtonsStart;
+    timeButtonsSum += timeDiff;
+    if(timeDiff > timeButtonMax) timeButtonMax = timeDiff;
+    if(timeDiff < timeButtonMin) timeButtonMin = timeDiff;
+    Serial.printf("Iter: %d | Max: %d | Min: %d | Avg: %f\n",countButtons,timeButtonMax,timeButtonMin,(float)(timeButtonsSum/countButtons));
       
     //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
     vTaskDelayUntil( &xLastWakeTime, xPeriod );
@@ -124,11 +149,20 @@ void TaskReadAccel1(void*)
 void TaskReadAccel2(void*)
 {
   TickType_t xLastWakeTime = xTaskGetTickCount();
-  const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL2_PERIOD);  
+  const TickType_t xPeriod = pdMS_TO_TICKS(ACCEL2_PERIOD); 
+      int countButtons = 0;
+    int timeButtonsStart = 0;
+    int timeButtonsEnd = 0;
+    float timeButtonsSum = 0;
+    int timeButtonMax = 0;
+    int timeButtonMin = 99999;
+    int timeDiff = 0;   
     for(;;)
     {
+                timeButtonsStart = micros();
+    countButtons = countButtons + 1;
         //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
-        ttAccel2.timeStart = micros();
+        //ttAccel2.timeStart = micros();
 
         pcp_mutex_lock(&xAccel2Mutex);
         readData(accel2, I2C_1);
@@ -140,8 +174,14 @@ void TaskReadAccel2(void*)
         //         accel2.pitch);
         pcp_mutex_unlock(&xAccel2Mutex);
         
-        ttAccel2.timeEnd = micros();
-        time_calculations(&ttAccel2);
+        //ttAccel2.timeEnd = micros();
+        //time_calculations(&ttAccel2);
+            timeButtonsEnd = micros();
+    timeDiff = timeButtonsEnd - timeButtonsStart;
+    timeButtonsSum += timeDiff;
+    if(timeDiff > timeButtonMax) timeButtonMax = timeDiff;
+    if(timeDiff < timeButtonMin) timeButtonMin = timeDiff;
+    Serial.printf("Iter: %d | Max: %d | Min: %d | Avg: %f\n",countButtons,timeButtonMax,timeButtonMin,(float)(timeButtonsSum/countButtons));
 
         //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
@@ -152,11 +192,20 @@ void TaskUpdateGamePhysics(void*){
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
     const float deltaTime = 0.033f;
+                      int countButtons = 0;
+    int timeButtonsStart = 0;
+    int timeButtonsEnd = 0;
+    float timeButtonsSum = 0;
+    int timeButtonMax = 0;
+    int timeButtonMin = 99999;
+    int timeDiff = 0;  
     
     
     for(;;) {
         //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
-        ttGamePhysics.timeStart = micros();
+        //ttGamePhysics.timeStart = micros();
+                                timeButtonsStart = micros();
+    countButtons = countButtons + 1;
 
         // Copy accel data
         pcp_mutex_lock(&xAccel1Mutex);
@@ -182,8 +231,15 @@ void TaskUpdateGamePhysics(void*){
         game_update_physics(deltaTime);  // <-- Calls game.cpp function
         pcp_mutex_unlock(&xGameStateMutex);
 
-        ttGamePhysics.timeEnd = micros();
-        time_calculations(&ttGamePhysics);
+        //ttGamePhysics.timeEnd = micros();
+        //time_calculations(&ttGamePhysics);
+                            timeButtonsEnd = micros();
+    timeDiff = timeButtonsEnd - timeButtonsStart;
+    timeButtonsSum += timeDiff;
+    if(timeDiff > timeButtonMax) timeButtonMax = timeDiff;
+    if(timeDiff < timeButtonMin) timeButtonMin = timeDiff;
+    Serial.printf("Iter: %d | Max: %d | Min: %d | Avg: %f\n",countButtons,timeButtonMax,timeButtonMin,(float)(timeButtonsSum/countButtons));
+
 
         //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
@@ -193,15 +249,23 @@ void TaskUpdateGamePhysics(void*){
 void TaskGameLogic(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xPeriod = pdMS_TO_TICKS(GAME_PERIOD);
-    
+                  int countButtons = 0;
+    int timeButtonsStart = 0;
+    int timeButtonsEnd = 0;
+    float timeButtonsSum = 0;
+    int timeButtonMax = 0;
+    int timeButtonMin = 99999;
+    int timeDiff = 0;  
 
     //game_init();
     
     for(;;) 
     {
+                        timeButtonsStart = micros();
+    countButtons = countButtons + 1;
         //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
 
-        ttGameLogic.timeStart = micros();
+        //ttGameLogic.timeStart = micros();
 
         // Copy button states
         pcp_mutex_lock(&xButtonMutex);
@@ -218,8 +282,15 @@ void TaskGameLogic(void* pvParameters) {
         game_update_logic(localSelectPressed, localCyclePressed);
         pcp_mutex_unlock(&xGameStateMutex);
         
-        ttGameLogic.timeEnd = micros();
-        time_calculations(&ttGameLogic);
+        //ttGameLogic.timeEnd = micros();
+        //time_calculations(&ttGameLogic);
+                    timeButtonsEnd = micros();
+    timeDiff = timeButtonsEnd - timeButtonsStart;
+    timeButtonsSum += timeDiff;
+    if(timeDiff > timeButtonMax) timeButtonMax = timeDiff;
+    if(timeDiff < timeButtonMin) timeButtonMin = timeDiff;
+    Serial.printf("Iter: %d | Max: %d | Min: %d | Avg: %f\n",countButtons,timeButtonMax,timeButtonMin,(float)(timeButtonsSum/countButtons));
+
 
         //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
@@ -230,14 +301,23 @@ void TaskGameLogic(void* pvParameters) {
 void TaskRenderLCD1(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
+          int countButtons = 0;
+    int timeButtonsStart = 0;
+    int timeButtonsEnd = 0;
+    float timeButtonsSum = 0;
+    int timeButtonMax = 0;
+    int timeButtonMin = 99999;
+    int timeDiff = 0;  
     
     //Serial.println("TaskRenderLCD1: Task started");
     
     for(;;)
     {
-        digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
+                        timeButtonsStart = micros();
+    countButtons = countButtons + 1;
+        //digitalWrite(1, HIGH); // Debug pin to measure LCD task timing
 
-        ttLCD.timeStart = micros();
+        //ttLCD.timeStart = micros();
 
         // Copy game state
         pcp_mutex_lock(&xGameStateMutex);
@@ -350,9 +430,15 @@ void TaskRenderLCD1(void* pvParameters) {
                 break;
         }
         
-        ttLCD.timeEnd = micros();
-        time_calculations(&ttLCD);
-        digitalWrite(1, LOW); // Debug pin to measure LCD task timing
+        //ttLCD.timeEnd = micros();
+        //time_calculations(&ttLCD);
+        //digitalWrite(1, LOW); // Debug pin to measure LCD task timing
+                    timeButtonsEnd = micros();
+    timeDiff = timeButtonsEnd - timeButtonsStart;
+    timeButtonsSum += timeDiff;
+    if(timeDiff > timeButtonMax) timeButtonMax = timeDiff;
+    if(timeDiff < timeButtonMin) timeButtonMin = timeDiff;
+    Serial.printf("Iter: %d | Max: %d | Min: %d | Avg: %f\n",countButtons,timeButtonMax,timeButtonMin,(float)(timeButtonsSum/countButtons));
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 
@@ -361,10 +447,20 @@ void TaskRenderLCD1(void* pvParameters) {
 void TaskRenderLCD2(void* pvParameters) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xPeriod = pdMS_TO_TICKS(LCD_PERIOD);
+              int countButtons = 0;
+    int timeButtonsStart = 0;
+    int timeButtonsEnd = 0;
+    float timeButtonsSum = 0;
+    int timeButtonMax = 0;
+    int timeButtonMin = 99999;
+    int timeDiff = 0;  
     
     Serial.println("TaskRenderLCD2: Task started");
     
     for(;;) {
+
+                                timeButtonsStart = micros();
+    countButtons = countButtons + 1;
         // Copy game state
         pcp_mutex_lock(&xGameStateMutex);
         GameState localState = gameState;
@@ -473,6 +569,12 @@ void TaskRenderLCD2(void* pvParameters) {
                 break;
         }
         
+                            timeButtonsEnd = micros();
+    timeDiff = timeButtonsEnd - timeButtonsStart;
+    timeButtonsSum += timeDiff;
+    if(timeDiff > timeButtonMax) timeButtonMax = timeDiff;
+    if(timeDiff < timeButtonMin) timeButtonMin = timeDiff;
+    Serial.printf("Iter: %d | Max: %d | Min: %d | Avg: %f\n",countButtons,timeButtonMax,timeButtonMin,(float)(timeButtonsSum/countButtons));
         
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
